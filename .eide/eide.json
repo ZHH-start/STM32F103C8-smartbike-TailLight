@@ -23,6 +23,12 @@
                 "path": "Drive/Device/LED.h"
               },
               {
+                "path": "Drive/Device/MPU6050.c"
+              },
+              {
+                "path": "Drive/Device/MPU6050.h"
+              },
+              {
                 "path": "Drive/Device/OLED_Font.h"
               },
               {
@@ -48,6 +54,12 @@
               },
               {
                 "path": "Drive/Hardware/Delay.h"
+              },
+              {
+                "path": "Drive/Hardware/IIC.c"
+              },
+              {
+                "path": "Drive/Hardware/IIC.h"
               },
               {
                 "path": "Drive/Hardware/USART.c"

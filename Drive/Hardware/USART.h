@@ -17,9 +17,9 @@ extern u16 USART2_RX_STA;                // 接收状态标记
 extern u8 USART3_RX_BUF[USART3_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.末字节为换行符
 extern u16 USART3_RX_STA;                // 接收状态标记
 
-void USART1_Init(u32 baud);
-void USART2_Init(u32 baud);
-void USART3_Init(u32 baud);
+void USART1_Init(u32 baud); // A9--TX,A10--RX
+void USART2_Init(u32 baud); // A2--TX,A3--RX
+void USART3_Init(u32 baud); // B10--TX,B11--RX
 
 void USART1_SendByte(uint8_t Byte);
 void USART2_SendByte(uint8_t Byte);
