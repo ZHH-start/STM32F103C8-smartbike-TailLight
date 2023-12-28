@@ -17,25 +17,22 @@
             "name": "Device",
             "files": [
               {
-                "path": "Drive/Device/LED.c"
+                "path": "Drive/Device/AIR780GE.c"
               },
               {
-                "path": "Drive/Device/LED.h"
+                "path": "Drive/Device/LCD.c"
+              },
+              {
+                "path": "Drive/Device/LED.c"
               },
               {
                 "path": "Drive/Device/MPU6050.c"
               },
               {
-                "path": "Drive/Device/MPU6050.h"
-              },
-              {
-                "path": "Drive/Device/OLED_Font.h"
+                "path": "Drive/Device/OLED_1_3.c"
               },
               {
                 "path": "Drive/Device/OLED.c"
-              },
-              {
-                "path": "Drive/Device/OLED.h"
               }
             ],
             "folders": []
@@ -271,7 +268,10 @@
   },
   "targets": {
     "Target 1": {
-      "excludeList": [],
+      "excludeList": [
+        "<virtual_root>/Drive/Device/OLED.c",
+        "<virtual_root>/Drive/Device/OLED_test.c"
+      ],
       "toolchain": "AC5",
       "compileConfig": {
         "cpuType": "Cortex-M3",

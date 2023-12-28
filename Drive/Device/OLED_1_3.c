@@ -1,5 +1,5 @@
 #include "OLED_Font.h"
-#include "OLED.h"
+#include "OLED_1_3.h"
 
 /*引脚初始化*/
 void OLED_I2C_Init(void)
@@ -96,7 +96,8 @@ void OLED_SetCursor(uint8_t Y, uint8_t X)
 {
     OLED_WriteCommand(0xB0 | Y);                 // 设置Y位置
     OLED_WriteCommand(0x10 | ((X & 0xF0) >> 4)); // 设置X位置高4位
-    OLED_WriteCommand(0x00 | (X & 0x0F));        // 设置X位置低4位
+    OLED_WriteCommand(0x02 | (X & 0x0F));        
+    // 设置X位置低4位-此处控制左右方向的偏移，0x02为向右偏移两个像素
 }
 
 /**
@@ -109,7 +110,7 @@ void OLED_Clear(void)
     uint8_t i, j;
     for (j = 0; j < 8; j++) {
         OLED_SetCursor(j, 0);
-        for (i = 0; i < 128; i++) {
+        for (i = 0; i < 132; i++) {
             OLED_WriteData(0x00);
         }
     }
@@ -277,7 +278,7 @@ void OLED_Init(void)
     OLED_WriteCommand(0xDA); // 设置COM引脚硬件配置
     OLED_WriteCommand(0x12);
 
-    OLED_WriteCommand(0x81); // 设置对比度控制
+    // OLED_WriteCommand(0xff); // 设置对比度控制(实际无效)
     OLED_WriteCommand(0xCF);
 
     OLED_WriteCommand(0xD9); // 设置预充电周期

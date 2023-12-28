@@ -1,5 +1,5 @@
-#ifndef __OLED_H
-#define __OLED_H
+#ifndef __OLED_1_3_H
+#define	__OLED_1_3_H
 
 #include "stm32f10x.h"
 
