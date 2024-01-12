@@ -21,23 +21,25 @@ void USART1_Init(u32 baud); // A9--TX,A10--RX
 void USART2_Init(u32 baud); // A2--TX,A3--RX
 void USART3_Init(u32 baud); // B10--TX,B11--RX
 
-void USART1_SendByte(uint8_t Byte);
+void USART1_SendByte(uint8_t Byte); // 发送字符
 void USART2_SendByte(uint8_t Byte);
 void USART3_SendByte(uint8_t Byte);
 
-void USART1_SendArray(uint8_t *Array, uint16_t Length);
+void USART1_SendArray(uint8_t *Array, uint16_t Length); //发送数组
 void USART2_SendArray(uint8_t *Array, uint16_t Length);
 void USART3_SendArray(uint8_t *Array, uint16_t Length);
 
-void USART1_SendString(char *String);
+void USART1_SendString(char *String); // 发送字符串
 void USART2_SendString(char *String);
 void USART3_SendString(char *String);
 
-void USART1_SendNumber(uint32_t Number, uint8_t Length);
+void USART1_SendNumber(uint32_t Number, uint8_t Length); //发送数字
 void USART2_SendNumber(uint32_t Number, uint8_t Length);
 void USART3_SendNumber(uint32_t Number, uint8_t Length);
 
-void USART1_Printf(char *format, ...);
+void USART1_RX_BUF_clean();
+
+void USART1_Printf(char *format, ...); //print
 void USART2_Printf(char *format, ...);
 void USART3_Printf(char *format, ...);
 

@@ -4,28 +4,30 @@ char print;
 
 int main(void)
 {
+    u8 len=0;
+    u8 t;
     LED_Init();
     OLED_Init();
+    USART2_Init(9600);
     USART1_Init(115200);
     MPU6050_Init();
+    // OLED_ShowString(1, 1, "receive:");
     AD_Init();
-
-    USART1_Printf("Init done.");
+    // USART1_Printf("test");
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级
+    USART1_Printf("Init done.\n");
+    // USART2_Printf("USART2 Init done.\n");
     while (1) {
-        LED_open();
+            LED_open();
+            Delay_ms(500);
+            LED_close();
+        // // USART1_RXBUF_Clean();
+            Delay_ms(500);
+            // USART1_SendNumber(USART1_RX_STA,16);
+            // USART1_Printf("\n");            
+                // USART1_RX_BUF_clean();
+            USART1_RX_STA = 0;
         
-        Delay_ms(150);
-        LED_close();
-        // OLED_Clear();
-        Delay_ms(150);
-        // MPU6050_GetData();
-
-        // OLED_ShowStr(0,0,"abcdefg",1);
-
-        // OLED_ShowString(1, 1, "GX:");
-        // OLED_ShowSignedNum(1, 4, GX, 4);
-
-        // OLED_ShowString(2, 1, "GY:");
-        // OLED_ShowSignedNum(2, 4, GY, 4);
     }
+
 }

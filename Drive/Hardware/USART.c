@@ -1,6 +1,8 @@
 #include "USART.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include "OLED.h"
+#include "LED.h"
 
 // 加入以下代码,支持printf函数,而不需要选择use MicroLIB
 #if 1
@@ -36,8 +38,7 @@ u16 USART2_RX_STA = 0;            // 接收状态标记
 u8 USART3_RX_BUF[USART3_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.
 u16 USART3_RX_STA = 0;            // 接收状态标记
 
-u8 mold = 0;
-// 接收状态
+// USART3_RX_STA接收状态标志位：
 // bit15，	接收完成标志
 // bit14，	接收到0x0d
 // bit13~0，	接收到的有效字节数目
@@ -64,7 +65,7 @@ void USART1_Init(u32 baud)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IPU;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -130,7 +131,6 @@ void USART2_Init(u32 baud)
     USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;  // 收发模式
 
     USART_Init(USART2, &USART_InitStructure);
-    ;                                              // 初始化串口
     USART_ITConfig(USART2, USART_IT_RXNE, ENABLE); // 开启中断接收
     USART_Cmd(USART2, ENABLE);                     // 使能串口
 }
@@ -276,6 +276,14 @@ void USART3_SendNumber(uint32_t Number, uint8_t Length)
     }
 }
 
+void USART1_RX_BUF_clean(void)
+{
+
+    for (int i = 0; i <= 180; i++) {
+        USART1_RX_BUF[i] = '\0';
+    }
+}
+
 int fputc(int ch, FILE *f)
 {
     USART1_SendByte(ch);
@@ -386,50 +394,41 @@ uint8_t USART3_GetRxData(void)
 
 void USART1_IRQHandler(void) // 串口1中断服务程序
 {
-    u8 Res;
-#if SYSTEM_SUPPORT_OS // 如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
-    OSIntEnter();
-#endif
+    uint8_t Res;
     if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
     {
-        Res  = USART_ReceiveData(USART1); // 读取接收到的数据
-        mold = Res;
-        if ((USART1_RX_STA & 0x8000) == 0) // 接收未完成
+        Res = USART_ReceiveData(USART1); // 读取接收到的数据
+        if ((USART1_RX_STA & 0x8000) == 0) // 接收未完成(15位不是1)
         {
-            if (USART1_RX_STA & 0x4000) // 接收到了0x0d
+            if (USART1_RX_STA & 0x4000) // 在下面被赋值，表示接收到了0x0d（通过判断14位1或者0
             {
-                if (Res != 0x0a)
-                    USART1_RX_STA = 0; // 接收错误,重新开始
-                else
-                    USART1_RX_STA |= 0x8000; // 接收完成了
-            } else                           // 还没收到0X0D
+                if (Res != 0x0a) {
+                    USART1_RX_STA = 0; // 0d后面没跟着0a，接收错误,重新开始
+                } else {
+                    USART1_RX_STA |= 0x8000; // 接收完成了，15位赋1 |=：按位或赋值
+                }
+            } else // 还没收到0X0D
             {
-                if (Res == 0x0d)
-                    USART1_RX_STA |= 0x4000;
-                else {
-                    USART1_RX_BUF[USART1_RX_STA & 0X3FFF] = Res;
+                if (Res == 0x0d) {
+                    USART1_RX_STA |= 0x4000; // 计数器不再增加，14位置1，不再接收，等待0x0a，下一次循环进入上面接收到0d的循环
+                } else {
+                    USART1_RX_BUF[USART1_RX_STA & 0X3FFF] = Res; // 14 15位清零，并将数据保存在USART1_RX_BUF内
                     USART1_RX_STA++;
-                    if (USART1_RX_STA > (USART1_REC_LEN - 1)) USART1_RX_STA = 0; // 接收数据错误,重新开始接收
+                    if (USART1_RX_STA > (USART1_REC_LEN - 1)) USART1_RX_STA = 0; // 接收数据过大,重新开始接收
                 }
             }
         }
     }
-#if SYSTEM_SUPPORT_OS // 如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
-    OSIntExit();
-#endif
 }
 
 void USART2_IRQHandler(void) // 串口2中断服务程序
 {
     u8 Res;
-#if SYSTEM_SUPPORT_OS // 如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
-    OSIntEnter();
-#endif
     if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
     {
         Res = USART_ReceiveData(USART2); // 读取接收到的数据
 
-        if ((USART2_RX_STA & 0x8000) == 0) // 接收未完成
+        if ((USART2_RX_STA & 0x8000) == 0) // 接收未完成（第15位不是1）
         {
             if (USART2_RX_STA & 0x4000) // 接收到了0x0d
             {
@@ -449,17 +448,11 @@ void USART2_IRQHandler(void) // 串口2中断服务程序
             }
         }
     }
-#if SYSTEM_SUPPORT_OS // 如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
-    OSIntExit();
-#endif
 }
 
 void USART3_IRQHandler(void) // 串口3中断服务程序
 {
     u8 Res;
-#if SYSTEM_SUPPORT_OS // 如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
-    OSIntEnter();
-#endif
     if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
     {
         Res = USART_ReceiveData(USART3); // 读取接收到的数据
@@ -484,7 +477,4 @@ void USART3_IRQHandler(void) // 串口3中断服务程序
             }
         }
     }
-#if SYSTEM_SUPPORT_OS // 如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
-    OSIntExit();
-#endif
 }
