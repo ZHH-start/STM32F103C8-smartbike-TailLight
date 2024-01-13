@@ -4,8 +4,6 @@ char print;
 
 int main(void)
 {
-    u8 len=0;
-    u8 t;
     LED_Init();
     OLED_Init();
     USART2_Init(9600);
@@ -21,13 +19,6 @@ int main(void)
             LED_open();
             Delay_ms(500);
             LED_close();
-        // // USART1_RXBUF_Clean();
-            Delay_ms(500);
-            // USART1_SendNumber(USART1_RX_STA,16);
-            // USART1_Printf("\n");            
-                // USART1_RX_BUF_clean();
-            USART1_RX_STA = 0;
-        
     }
 
 }
