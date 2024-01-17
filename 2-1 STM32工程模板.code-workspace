@@ -43,7 +43,8 @@
                 "command": "extension.execute",
                 "priority": 4
             }
-        ]
+        ],
+        "RTT_Studio.Build.Parallel_Jobs": "8"
     },
     "extensions": {
         "recommendations": [
