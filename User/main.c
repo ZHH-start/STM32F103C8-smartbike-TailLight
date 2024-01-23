@@ -19,6 +19,7 @@ int main(void)
             LED_open();
             Delay_ms(500);
             LED_close();
+            Delay_ms(500);
     }
 
 }
