@@ -37,7 +37,7 @@ void USART1_SendNumber(uint32_t Number, uint8_t Length); //·¢ËÍÊý×Ö
 void USART2_SendNumber(uint32_t Number, uint8_t Length);
 void USART3_SendNumber(uint32_t Number, uint8_t Length);
 
-void USART1_RX_BUF_clean();
+void USART1_RX_BUF_clean(void);
 
 void USART1_Printf(char *format, ...); //print
 void USART2_Printf(char *format, ...);
