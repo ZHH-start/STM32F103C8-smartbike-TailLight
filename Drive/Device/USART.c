@@ -24,16 +24,25 @@ void _sys_exit(int x)
 // 	while((USART1->SR&0X40)==0);//循环发送,直到发送完毕
 //     USART1->DR = (u8) ch;
 // 	return ch;
-}
+// }
+
+// int fputc(int ch, FILE *f)
+// {
+//     USART1_SendByte(ch);
+//     return ch;
+// }
+
 #endif
 
-#if EN_USART1_RX // 如果使能了接收
+// #if EN_USART1_RX // 如果使能了接收
 
 u8 USART1_RX_BUF[USART1_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.
 u16 USART1_RX_STA = 0;            // 接收状态标记
 
 u8 USART2_RX_BUF[USART2_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.
-u16 USART2_RX_STA = 0;            // 接收状态标记
+u16 USART2_RX_STA    = 0;         // 接收状态标记
+u8 GPS_receive_count = 0;         // 串口接收数据计数
+Receive_GPS_data receDataFrame;
 
 u8 USART3_RX_BUF[USART3_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.
 u16 USART3_RX_STA = 0;            // 接收状态标记
@@ -43,7 +52,7 @@ u16 USART3_RX_STA = 0;            // 接收状态标记
 // bit14，	接收到0x0d
 // bit13~0，	接收到的有效字节数目
 
-#endif
+// #endif
 
 uint8_t USART1_RxData;
 uint8_t USART1_RxFlag;
@@ -92,8 +101,7 @@ void USART1_Init(u32 baud)
     // NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
     // NVIC_Init(&NVIC_InitStructure);
 
-    USART_Cmd(USART1, ENABLE);
-    USART_Cmd(USART1, ENABLE);                     // 使能串口
+    USART_Cmd(USART1, ENABLE); // 使能串口
 }
 
 void USART2_Init(u32 baud)
@@ -287,12 +295,6 @@ void USART1_RX_BUF_clean(void)
     }
 }
 
-int fputc(int ch, FILE *f)
-{
-    USART1_SendByte(ch);
-    return ch;
-}
-
 void USART1_Printf(char *format, ...)
 {
     char String[100];
@@ -394,31 +396,76 @@ void USART1_IRQHandler(void) // 串口1中断服务程序
     }
 }
 
-void USART2_IRQHandler(void) // 串口2中断服务程序
-{
-    u8 Res;
-    if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
-    {
-        Res = USART_ReceiveData(USART2); // 读取接收到的数据
+// void USART2_IRQHandler(void) // 串口2中断服务程序
+// {
+//     u8 Res;
+//     if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
+//     {
+//         Res = USART_ReceiveData(USART2); // 读取接收到的数据
 
-        if ((USART2_RX_STA & 0x8000) == 0) // 接收未完成（第15位不是1）
-        {
-            if (USART2_RX_STA & 0x4000) // 接收到了0x0d
-            {
-                if (Res != 0x0a)
-                    USART2_RX_STA = 0; // 接收错误,重新开始
-                else
-                    USART2_RX_STA |= 0x8000; // 接收完成了
-            } else                           // 还没收到0X0D
-            {
-                if (Res == 0x0d)
-                    USART2_RX_STA |= 0x4000;
-                else {
-                    USART2_RX_BUF[USART2_RX_STA & 0X3FFF] = Res;
-                    USART2_RX_STA++;
-                    if (USART2_RX_STA > (USART2_REC_LEN - 1)) USART2_RX_STA = 0; // 接收数据错误,重新开始接收
-                }
+//         if ((USART2_RX_STA & 0x8000) == 0) // 接收未完成（第15位不是1）
+//         {
+//             if (USART2_RX_STA & 0x4000) // 接收到了0x0d
+//             {
+//                 if (Res != 0x0a)
+//                     USART2_RX_STA = 0; // 接收错误,重新开始
+//                 else
+//                     USART2_RX_STA |= 0x8000; // 接收完成了
+//             } else                           // 还没收到0X0D
+//             {
+//                 if (Res == 0x0d)
+//                     USART2_RX_STA |= 0x4000;
+//                 else {
+//                     USART2_RX_BUF[USART2_RX_STA & 0X3FFF] = Res;
+//                     USART2_RX_STA++;
+//                     if (USART2_RX_STA > (USART2_REC_LEN - 1)) USART2_RX_STA = 0; // 接收数据错误,重新开始接收
+//                 }
+//             }
+//         }
+//     }
+// }
+
+/*
+ *==============================================================================
+ *函数名称：USART1_IRQHandler
+ *函数功能：串口1中断服务函数
+ *输入参数：无
+ *返回值：无
+ *备  注：无
+ *==============================================================================
+ */
+void USART2_IRQHandler(void)
+{
+    u8 recContent; // 存储接收内容
+
+    // 如果串口接收到内容
+    if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) {
+        recContent = USART_ReceiveData(USART2); // 存储接收内容
+
+        // 如果接收到的是$（$是一帧信息的开始）
+        // 保证每接收到新的一帧信息就从缓冲区起始位置开始存储
+        if (recContent == '$') {
+            GPS_receive_count = 0; // 清零帧信息计数变量
+        }
+
+        // 存储接收到的帧信息
+        USART2_RX_BUF[GPS_receive_count++] = recContent;
+
+        // 确定是否收到"GPRMC/GNRMC"这一帧数据
+        if (USART2_RX_BUF[0] == '$' && USART2_RX_BUF[4] == 'M' && USART2_RX_BUF[5] == 'C') {
+            // 接收到换行（接收完了一帧信息）
+            if (recContent == '\n') {
+                memset(receDataFrame.Frame_Buffer, 0, Frame_Buffer_Length);           // 初始化接收帧信息数组
+                memcpy(receDataFrame.Frame_Buffer, USART2_RX_BUF, GPS_receive_count); // 保存GPRMC/GNRMC这帧的数据
+                receDataFrame.isGetData = 1;                                          // 接收成功
+                GPS_receive_count       = 0;                                          // 清零接收帧信息接收计数变量
+                memset(USART2_RX_BUF, 0, USART2_REC_LEN);                             // 清空串口1接收Buf
             }
+        }
+
+        // 如果接收内容超出最大长度，不再继续接收
+        if (GPS_receive_count >= USART2_REC_LEN) {
+            GPS_receive_count = USART2_REC_LEN;
         }
     }
 }

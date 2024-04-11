@@ -33,6 +33,9 @@
               },
               {
                 "path": "Drive/Device/OLED.c"
+              },
+              {
+                "path": "Drive/Device/USART.c"
               }
             ],
             "folders": []
@@ -57,12 +60,6 @@
               },
               {
                 "path": "Drive/Hardware/IIC.h"
-              },
-              {
-                "path": "Drive/Hardware/USART.c"
-              },
-              {
-                "path": "Drive/Hardware/USART.h"
               }
             ],
             "folders": []

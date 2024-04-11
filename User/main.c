@@ -1,12 +1,11 @@
 #include "stm32f10x_conf.h"
 
 char print;
+extern Receive_GPS_data receDataFrame;//USART.c文件中使用的GPS数据结构体
 
 int main(void)
 {
     int i;
-    char *j;
-    u8 USART2_RX_BUF_order[] = "find";
     LED_Init();
     OLED_Init();
     USART1_Init(115200);
@@ -20,25 +19,16 @@ int main(void)
     USART2_Printf("USART2 Init done.\n");
     while (1) {
 
-        if (USART2_RX_STA & 0x8000) {
-            USART2_RX_STA = USART2_RX_STA & 0x7FFF;
-            // USART1_SendString("in");
-            // USART1_SendString(USART2_RX_BUF);
-            j = strstr(USART2_RX_BUF, USART2_RX_BUF_order);
-            USART1_SendByte(*j);
-            USART1_SendByte(*(j+1));
-            USART1_SendByte(*(j+2));
-            // USART1_SendString("done");
-            for (i = 0; i < 70; i++) {
-                USART2_RX_BUF[i] = '\0';
-            }
+        if (receDataFrame.isGetData==1)
+        {
+            USART2_SendString(receDataFrame.Frame_Buffer);
+            receDataFrame.isGetData = 0;
         }
-
         
 
-        LED_open();
-        Delay_ms(500);
-        LED_close();
-        Delay_ms(500);
+        // LED_open();
+        // Delay_ms(500);
+        // LED_close();
+        // Delay_ms(500);
     }
 }
