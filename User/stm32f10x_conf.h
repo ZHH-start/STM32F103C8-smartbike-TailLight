@@ -24,6 +24,18 @@
 #define __STM32F10x_CONF_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "ADC.h"
+#include "USART.h"
+#include "Delay.h"
+#include "OLED.h"
+// #include "OLED_1_3.h"
+#include "LED.h"
+#include "IIC.h"
+#include "MPU6050.h"
+#include "LCD.h"
+
+#include "stdio.h"
+#include "stdlib.h"
 /* Uncomment/Comment the line below to enable/disable peripheral header file inclusion */
 #include "stm32f10x_adc.h"
 #include "stm32f10x_bkp.h"

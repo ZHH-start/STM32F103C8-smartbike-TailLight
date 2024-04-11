@@ -20,11 +20,11 @@ void _sys_exit(int x)
 }
 // 重定义fputc函数
 // int fputc(int ch, FILE *f)
-//{
-//	while((USART1->SR&0X40)==0);//循环发送,直到发送完毕
+// {
+// 	while((USART1->SR&0X40)==0);//循环发送,直到发送完毕
 //     USART1->DR = (u8) ch;
-//	return ch;
-// }
+// 	return ch;
+}
 #endif
 
 #if EN_USART1_RX // 如果使能了接收
@@ -81,13 +81,13 @@ void USART1_Init(u32 baud)
 
     USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    // NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
     NVIC_Init(&NVIC_InitStructure);
 
     USART_Cmd(USART1, ENABLE);
@@ -116,10 +116,10 @@ void USART2_Init(u32 baud)
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2, ENABLE);  // 复位串口2
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_USART2, DISABLE); // 停止复位
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);                     // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级   0-3;
+    // NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);                     // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级   0-3;
     NVIC_InitStructure.NVIC_IRQChannel                   = USART2_IRQn; // 使能串口2中断
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;           // 先占优先级2级
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 3;           // 从优先级2级
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;           // 先占优先级2级
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;           // 从优先级2级
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;      // 使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);                                     // 根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
 
@@ -362,36 +362,6 @@ uint8_t USART3_GetRxData(void)
     return USART3_RxData;
 }
 
-// void USART1_IRQHandler(void)
-//{
-//	if (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)
-//	{
-//		USART1_RxData = USART_ReceiveData(USART1);
-//		USART1_RxFlag = 1;
-//		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-//	}
-// }
-
-// void USART2_IRQHandler(void)
-//{
-//	if (USART_GetITStatus(USART2, USART_IT_RXNE) == SET)
-//	{
-//		USART2_RxData = USART_ReceiveData(USART2);
-//		USART2_RxFlag = 1;
-//		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-//	}
-// }
-
-// void USART3_IRQHandler(void)
-//{
-//	if (USART_GetITStatus(USART3, USART_IT_RXNE) == SET)
-//	{
-//		USART3_RxData = USART_ReceiveData(USART3);
-//		USART3_RxFlag = 1;
-//		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
-//	}
-// }
-
 void USART1_IRQHandler(void) // 串口1中断服务程序
 {
     uint8_t Res;
@@ -450,31 +420,31 @@ void USART2_IRQHandler(void) // 串口2中断服务程序
     }
 }
 
-void USART3_IRQHandler(void) // 串口3中断服务程序
-{
-    u8 Res;
-    if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
-    {
-        Res = USART_ReceiveData(USART3); // 读取接收到的数据
+// void USART3_IRQHandler(void) // 串口3中断服务程序
+// {
+//     u8 Res;
+//     if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
+//     {
+//         Res = USART_ReceiveData(USART3); // 读取接收到的数据
 
-        if ((USART3_RX_STA & 0x8000) == 0) // 接收未完成
-        {
-            if (USART3_RX_STA & 0x4000) // 接收到了0x0d
-            {
-                if (Res != 0x0a)
-                    USART3_RX_STA = 0; // 接收错误,重新开始
-                else
-                    USART3_RX_STA |= 0x8000; // 接收完成了
-            } else                           // 还没收到0X0D
-            {
-                if (Res == 0x0d)
-                    USART3_RX_STA |= 0x4000;
-                else {
-                    USART3_RX_BUF[USART3_RX_STA & 0X3FFF] = Res;
-                    USART3_RX_STA++;
-                    if (USART3_RX_STA > (USART3_REC_LEN - 1)) USART3_RX_STA = 0; // 接收数据错误,重新开始接收
-                }
-            }
-        }
-    }
-}
+//         if ((USART3_RX_STA & 0x8000) == 0) // 接收未完成
+//         {
+//             if (USART3_RX_STA & 0x4000) // 接收到了0x0d
+//             {
+//                 if (Res != 0x0a)
+//                     USART3_RX_STA = 0; // 接收错误,重新开始
+//                 else
+//                     USART3_RX_STA |= 0x8000; // 接收完成了
+//             } else                           // 还没收到0X0D
+//             {
+//                 if (Res == 0x0d)
+//                     USART3_RX_STA |= 0x4000;
+//                 else {
+//                     USART3_RX_BUF[USART3_RX_STA & 0X3FFF] = Res;
+//                     USART3_RX_STA++;
+//                     if (USART3_RX_STA > (USART3_REC_LEN - 1)) USART3_RX_STA = 0; // 接收数据错误,重新开始接收
+//                 }
+//             }
+//         }
+//     }
+// }
