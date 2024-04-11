@@ -36,6 +36,7 @@
 
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 /* Uncomment/Comment the line below to enable/disable peripheral header file inclusion */
 #include "stm32f10x_adc.h"
 #include "stm32f10x_bkp.h"

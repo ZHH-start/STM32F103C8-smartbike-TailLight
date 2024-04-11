@@ -59,12 +59,14 @@ void USART1_Init(u32 baud)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
+    // PA9 TX
     GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+    // PA10 RX
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -79,18 +81,19 @@ void USART1_Init(u32 baud)
     USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
     USART_Init(USART1, &USART_InitStructure);
 
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+    // USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 
     // NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
-    NVIC_InitTypeDef NVIC_InitStructure;
-    NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
-    NVIC_Init(&NVIC_InitStructure);
+    // NVIC_InitTypeDef NVIC_InitStructure;
+    // NVIC_InitStructure.NVIC_IRQChannel                   = USART1_IRQn;
+    // NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+    // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    // NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+    // NVIC_Init(&NVIC_InitStructure);
 
     USART_Cmd(USART1, ENABLE);
+    USART_Cmd(USART1, ENABLE);                     // 使能串口
 }
 
 void USART2_Init(u32 baud)
@@ -367,7 +370,7 @@ void USART1_IRQHandler(void) // 串口1中断服务程序
     uint8_t Res;
     if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) // 接收中断(接收到的数据必须是0x0d 0x0a结尾)
     {
-        Res = USART_ReceiveData(USART1); // 读取接收到的数据
+        Res = USART_ReceiveData(USART1);   // 读取接收到的数据
         if ((USART1_RX_STA & 0x8000) == 0) // 接收未完成(15位不是1)
         {
             if (USART1_RX_STA & 0x4000) // 在下面被赋值，表示接收到了0x0d（通过判断14位1或者0
