@@ -1,4 +1,3 @@
-#include "stm32f10x.h" // Device header
 #include "IIC.h"
 #include "USART.h"
 #include "MPU6050.h"

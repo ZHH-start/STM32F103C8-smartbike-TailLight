@@ -20,6 +20,9 @@
                 "path": "Drive/Device/AIR780GE.c"
               },
               {
+                "path": "Drive/Device/ATGM336H.c"
+              },
+              {
                 "path": "Drive/Device/LCD.c"
               },
               {
@@ -330,7 +333,6 @@
           "User",
           "Library",
           ".cmsis/include",
-          "RTE/_Target 1",
           ".eide/deps",
           "Drive/Device",
           "Drive/Hardware"

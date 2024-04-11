@@ -33,6 +33,7 @@
 #include "IIC.h"
 #include "MPU6050.h"
 #include "LCD.h"
+#include "ATGM336H.h"
 
 #include "stdio.h"
 #include "stdlib.h"
@@ -63,12 +64,6 @@
 #include "misc.h" /* High level functions for NVIC and SysTick (add-on to CMSIS functions) */
 
 /* Exported types ------------------------------------------------------------*/
-#define Frame_Buffer_Length 100 // 结构体buffer大小
-
-typedef struct {
-    u8 isGetData;                         // gps数据接收成功标志位，1成功0失败
-    u8 Frame_Buffer[Frame_Buffer_Length]; // gps接收帧信息数组
-} Receive_GPS_data;
 
 /* Exported constants --------------------------------------------------------*/
 /* Uncomment the line below to expanse the "assert_param" macro in the
