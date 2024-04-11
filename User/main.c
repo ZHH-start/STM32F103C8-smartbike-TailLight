@@ -19,7 +19,7 @@ int main(void)
 
         if (GNRMC_Info.isGetData==1)
         {
-            USART2_SendString(GNRMC_Info.GPS_Buffer);
+            USART1_SendString(GNRMC_Info.GPS_Buffer);
             GNRMC_Info.isGetData = 0;
         }
         

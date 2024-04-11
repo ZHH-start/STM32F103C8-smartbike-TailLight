@@ -1,6 +1,11 @@
 #include "ATGM336H.h"
+#include "USART.h"
 
 Receive_GPS_data GNRMC_Info; // USART.c文件中使用的GPS数据结构体
+
+float Lat; // 纬度的实际值
+float Lon; // 经度的实际值
+char dest[23];
 
 // 结构体初始化，清空全部数据
 void ATGM_StructInit()
@@ -20,7 +25,7 @@ void ATGM_StructInit()
 /*
  *==============================================================================
  *函数名称：Uart_Rece_Pares
- *函数功能：解析串口接收内容
+ *函数功能：解析串口接收的数据，分别将数据保存到结构体GNRMC_Info内各项
  *输入参数：无
  *返回值：无
  *备  注：无
@@ -42,20 +47,18 @@ void ParseGps()
             if (i == 0) {
                 if ((subString = strstr(GNRMC_Info.GPS_Buffer, ",")) == NULL) // 如果没有找到逗号
                 {
-                    return;
-                    // ERROR
+                    return; // ERROR
                 }
-
             } else {
-                subString++;
-                if ((subStringNext = strstr(subString, ",")) != NULL) {
+                subString++;                                            // 扫GPS_Buffer下一个数据
+                if ((subStringNext = strstr(subString, ",")) != NULL) { // 扫一次
                     char usefulBuffer[2];
                     switch (i) {
                         case 1:
-                            memcpy(GNRMC_Info.UTCTime, subString, subStringNext - subString);
+                            memcpy(GNRMC_Info.UTCTime, subString, subStringNext - subString); // 第一个数据
                             break;
                         case 2: {
-                            memcpy(usefulBuffer, subString, subStringNext - subString); // 有效标志位
+                            memcpy(usefulBuffer, subString, subStringNext - subString); // 第二个数据
                             if (usefulBuffer[0] == 'A')
                                 GNRMC_Info.isUsefull = 1;
                             else if (usefulBuffer[0] == 'V')
@@ -63,16 +66,16 @@ void ParseGps()
                             break;
                         }
                         case 3:
-                            memcpy(GNRMC_Info.latitude, subString, subStringNext - subString);
+                            memcpy(GNRMC_Info.latitude, subString, subStringNext - subString); // 第三个数据
                             break;
                         case 4:
-                            memcpy(GNRMC_Info.N_S, subString, subStringNext - subString);
+                            memcpy(GNRMC_Info.N_S, subString, subStringNext - subString); // 第四个数据
                             break;
                         case 5:
-                            memcpy(GNRMC_Info.longitude, subString, subStringNext - subString);
+                            memcpy(GNRMC_Info.longitude, subString, subStringNext - subString); // 第五个
                             break;
                         case 6:
-                            memcpy(GNRMC_Info.E_W, subString, subStringNext - subString);
+                            memcpy(GNRMC_Info.E_W, subString, subStringNext - subString); // 第六个
                             break;
                         default:
                             break;
@@ -85,27 +88,24 @@ void ParseGps()
     }
 }
 
-extern float Lat;
-extern float Lon;
-extern char dest[23];
+// 打印GPS接收到的数据
 void printGpsBuffer()
 {
     //$GNRMC,123211.000,A,2322.74250,N,11326.27041,E,3.21,217.19,100722,,,A*7A
-    if (GNRMC_Info.isParseData) {
+    if (GNRMC_Info.isParseData) { // 如果解析完成
         int i                  = 0;
-        GNRMC_Info.isParseData = 0;
-        if (GNRMC_Info.isUsefull) {
+        GNRMC_Info.isParseData = 0; // 清空解析完成标志位
+        if (GNRMC_Info.isUsefull) { // 如果信息有效
             float tmp            = 0;
             int j                = 0;
-            GNRMC_Info.isUsefull = 0;
+            GNRMC_Info.isUsefull = 0; // 清空有效情况
             for (i = 0; GNRMC_Info.latitude[i] != '\0'; i++) {
 
                 if (GNRMC_Info.latitude[i] == '.') {
                     continue;
                 }
                 if (i <= 1) {
-                    Lat = (GNRMC_Info.latitude[0] - 48) * 10 + (GNRMC_Info.latitude[1] - 48);
-                    // 取出个位和十位
+                    Lat = (GNRMC_Info.latitude[0] - 48) * 10 + (GNRMC_Info.latitude[1] - 48); // 取出个位和十位拼起来
                 } else {
                     tmp += (GNRMC_Info.latitude[i] - 48);
                     tmp *= 10;
@@ -130,7 +130,10 @@ void printGpsBuffer()
                 Lat -= iLat;
             }
             tmp = 0;
-            // 113.27041
+            // 113.27041-示例数据
+
+            // 处理纬度完成
+
             for (i = 0; GNRMC_Info.longitude[i] != '\0'; i++) {
 
                 if (GNRMC_Info.longitude[i] == '.') {
@@ -161,7 +164,7 @@ void printGpsBuffer()
                 iLon                    = (int)Lon;
                 GNRMC_Info.longitude[j] = iLon + '0';
                 Lon -= iLon;
-            }
+            } // 处理完成经度
 
             dest[8] = dest[10] = dest[20] = ',';
             dest[9]                       = 'N';
@@ -172,13 +175,14 @@ void printGpsBuffer()
                     dest[i] = GNRMC_Info.latitude[i];
                 if (i >= 11 && i <= 19)
                     dest[i] = GNRMC_Info.longitude[i - 11];
-            }
+            } // 将几个关键数据合到一起通过串口发送
 
             // printf("\r\ndest = ");
-            printf(dest);
+            // printf(dest);
+            USART1_SendString(dest);
             // printf("\r\n");
         } else {
-            printf("GPS DATA Is Not Useful!");
+            printf("GPS DATA Is Not Useful!"); // 返回信息无效
         }
     }
 }
