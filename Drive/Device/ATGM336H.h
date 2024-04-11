@@ -26,4 +26,8 @@ typedef struct {
 
 extern Receive_GPS_data GNRMC_Info;
 
+void ATGM_StructInit();
+void ParseGps();
+void printGpsBuffer();
+
 #endif

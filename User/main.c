@@ -6,6 +6,7 @@ int main(void)
 {
     // LED_Init();
     OLED_Init();
+    ATGM_StructInit();
     USART1_Init(115200);
     USART2_Init(9600);
     // MPU6050_Init();
@@ -16,13 +17,8 @@ int main(void)
     USART1_Printf("Init done.\n");
     USART2_Printf("USART2 Init done.\n");
     while (1) {
-
-        if (GNRMC_Info.isGetData==1)
-        {
-            USART1_SendString(GNRMC_Info.GPS_Buffer);
-            GNRMC_Info.isGetData = 0;
-        }
-        
+        ParseGps();
+        printGpsBuffer();
 
         // LED_open();
         // Delay_ms(500);
