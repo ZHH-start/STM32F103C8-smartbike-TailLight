@@ -20,6 +20,9 @@
                 "path": "Drive/Device/AIR780GE.c"
               },
               {
+                "path": "Drive/Device/KEY.c"
+              },
+              {
                 "path": "Drive/Device/LCD.c"
               },
               {

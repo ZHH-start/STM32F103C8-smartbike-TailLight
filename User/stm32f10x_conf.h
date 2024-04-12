@@ -33,6 +33,7 @@
 #include "IIC.h"
 #include "MPU6050.h"
 #include "LCD.h"
+#include "KEY.h"
 
 #include "stdio.h"
 #include "stdlib.h"
