@@ -62,7 +62,7 @@ void Key_Scan(void)
 
     Key_read_state = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7) - Key_read_last;
     Key_read_last  = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7);
-    if (Key_read_state == 1) { // 如果按键
+    if (Key_read_state == 1) { // 如果按键按下
         if (Mode_state < 2) {
             Mode_state++; // 模式切换
         } else
@@ -75,6 +75,7 @@ void TIM1_UP_IRQHandler()
 {
     // 处理定时器1的中断事件
     Key_Scan();
+    // USART2_Printf("TIM1 done");
     // 清除中断标志位
     TIM1->SR &= ~TIM_SR_UIF;
 }

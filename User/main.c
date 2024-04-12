@@ -15,21 +15,23 @@ int main(void)
     USART2_SendString("hello!");
 
     while (1) {
-        
-        // Delay_ms(50);
         switch (Mode_state) {
-            case 0:;
-                // USART2_Printf("000");
-                break;
             case 1:
-                Delay_s(2);
-                USART2_Printf("111");
+                // Delay_s(2);
+                MPU6050_detect();
+                ParseGps();       // 解析接收
+                printGpsBuffer(); // 处理接收
+                // USART2_Printf("done!");
                 break;
             case 2:
+                // Delay_s(1);
+                // USART2_Printf("LEDOPEN");
+                LED_open();
                 // USART2_Printf("2222");
                 break;
+            default:
+                LED_close();
+                break;
         }
-        ParseGps();       // 解析接收
-        printGpsBuffer(); // 处理接收
     }
 }
