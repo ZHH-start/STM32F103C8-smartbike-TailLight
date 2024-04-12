@@ -12,11 +12,11 @@ int main(void)
     MPU6050_Init();
     Key_init();
     OLED_ShowString(1, 1, "hello!");
+    USART2_SendString("hello!");
     while (1) {
         // OLED_Clear();
-        OLED_ShowNum(10, 1, Mode_state, 5);
+        // OLED_ShowNum(10, 1, Mode_state, 1);
         Key_Scan();
         LED_close();
-        Delay_ms(5);
     }
 }
