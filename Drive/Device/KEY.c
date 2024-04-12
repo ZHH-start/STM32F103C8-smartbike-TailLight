@@ -15,16 +15,15 @@ void Key_init(void)
 
 void Key_Scan(void)
 {
+    static char Key_read_last  = 0;
+    static char Key_read_state = 0;
 
-    if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7) == 1) {
-        Delay_ms(10);
-        if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7) == 1) {
-            USART2_SendString("in");
-            if (Mode_state < 2) {
-                Mode_state++;
-            } else
-                Mode_state = 0;
-            LED_open();
-        }
+    Key_read_state = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7) - Key_read_last;
+    Key_read_last  = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7);
+    if (Key_read_state == 1) {
+        if (Mode_state < 2) {
+            Mode_state++;
+        } else
+            Mode_state = 0;
     }
 }

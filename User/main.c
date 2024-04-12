@@ -18,5 +18,6 @@ int main(void)
         // OLED_ShowNum(10, 1, Mode_state, 1);
         Key_Scan();
         LED_close();
+        Delay_ms(50);
     }
 }
