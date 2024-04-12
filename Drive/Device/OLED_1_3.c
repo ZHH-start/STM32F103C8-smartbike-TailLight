@@ -278,7 +278,7 @@ void OLED_Init(void)
     OLED_WriteCommand(0xDA); // 设置COM引脚硬件配置
     OLED_WriteCommand(0x12);
 
-    // OLED_WriteCommand(0xff); // 设置对比度控制(实际无效)
+    OLED_WriteCommand(0xff); // 设置对比度控制(实际无效)
     OLED_WriteCommand(0xCF);
 
     OLED_WriteCommand(0xD9); // 设置预充电周期

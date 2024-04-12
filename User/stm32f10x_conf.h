@@ -34,6 +34,7 @@
 #include "MPU6050.h"
 #include "LCD.h"
 #include "ATGM336H.h"
+#include "KEY.h"
 
 #include "stdio.h"
 #include "stdlib.h"
