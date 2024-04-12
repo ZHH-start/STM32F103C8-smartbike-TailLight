@@ -20,10 +20,10 @@
                 "path": "Drive/Device/AIR780GE.c"
               },
               {
-                "path": "Drive/Device/KEY.c"
+                "path": "Drive/Device/ATGM336H.c"
               },
               {
-                "path": "Drive/Device/ATGM336H.c"
+                "path": "Drive/Device/KEY.c"
               },
               {
                 "path": "Drive/Device/LCD.c"
@@ -57,9 +57,6 @@
               },
               {
                 "path": "Drive/Hardware/IIC.c"
-              },
-              {
-                "path": "Drive/Hardware/IIC.h"
               }
             ],
             "folders": []
@@ -199,23 +196,22 @@
       "excludeList": [
         "<virtual_root>/Drive/Device/OLED.c",
         "<virtual_root>/Drive/Device/OLED_test.c",
-        "<virtual_root>/Drive/Hardware/ADC.c",
+        "<virtual_root>/Library/stm32f10x_dma.c",
         "<virtual_root>/Library/stm32f10x_exti.c",
         "<virtual_root>/Library/stm32f10x_flash.c",
         "<virtual_root>/Library/stm32f10x_fsmc.c",
         "<virtual_root>/Library/stm32f10x_i2c.c",
         "<virtual_root>/Library/stm32f10x_iwdg.c",
-        "<virtual_root>/Library/stm32f10x_sdio.c",
-        "<virtual_root>/Library/stm32f10x_spi.c",
+        "<virtual_root>/Library/stm32f10x_pwr.c",
         "<virtual_root>/Library/stm32f10x_wwdg.c",
-        "<virtual_root>/Library/stm32f10x_can.c",
-        "<virtual_root>/Library/stm32f10x_cec.c",
-        "<virtual_root>/Library/stm32f10x_crc.c",
+        "<virtual_root>/Library/stm32f10x_spi.c",
+        "<virtual_root>/Library/stm32f10x_sdio.c",
         "<virtual_root>/Library/stm32f10x_dac.c",
+        "<virtual_root>/Library/stm32f10x_crc.c",
+        "<virtual_root>/Library/stm32f10x_cec.c",
+        "<virtual_root>/Library/stm32f10x_can.c",
         "<virtual_root>/Library/stm32f10x_adc.c",
-        "<virtual_root>/Library/stm32f10x_dma.c",
-        "<virtual_root>/Library/stm32f10x_tim.c",
-        "<virtual_root>/Library/stm32f10x_dbgmcu.c"
+        "<virtual_root>/Drive/Hardware/ADC.c"
       ],
       "toolchain": "AC5",
       "compileConfig": {
