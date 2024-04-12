@@ -63,6 +63,10 @@ void Key_Scan(void)
     Key_read_state = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7) - Key_read_last;
     Key_read_last  = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7);
     if (Key_read_state == 1) { // 如果按键按下
+
+        Alarm_init_switch = 0; // 清除防盗标志位
+        Alarm_open        = 0; // 清除防盗标志位
+
         if (Mode_state < 2) {
             Mode_state++; // 模式切换
         } else

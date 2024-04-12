@@ -211,7 +211,8 @@
         "<virtual_root>/Library/stm32f10x_cec.c",
         "<virtual_root>/Library/stm32f10x_can.c",
         "<virtual_root>/Library/stm32f10x_adc.c",
-        "<virtual_root>/Drive/Hardware/ADC.c"
+        "<virtual_root>/Drive/Hardware/ADC.c",
+        "<virtual_root>/Library/stm32f10x_rtc.c"
       ],
       "toolchain": "AC5",
       "compileConfig": {

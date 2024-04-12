@@ -9,15 +9,15 @@ uint8_t MPU6050_ReadReg(uint8_t RegAddress);
 void MPU6050_Init(void);
 uint8_t MPU6050_GetID(void);
 void MPU6050_GetData();
-// void MPU6050_GetData(int16_t AX, int16_t AY, int16_t AZ,
-//                      int16_t GX, int16_t GY, int16_t GZ);
+void MPU6050_detect();
+void MPU6050_Alarm_init(void);
 
-extern int16_t AX, AY, AZ, GX, GY, GZ;
+extern u8 Alarm_open;
 
 #define MPU6050_SMPLRT_DIV   0x19 // 陀螺仪采样率，典型值：0x07(125Hz)
 #define MPU6050_CONFIG       0x1A // 低通滤波频率，典型值：0x06(5Hz)
 #define MPU6050_GYRO_CONFIG  0x1B // 陀螺仪自检及测量范围，典型值：0x18(不自检，2000deg/s)
-#define MPU6050_ACCEL_CONFIG 0x1C // 加速计自检、测量范围及高通滤波频率，典型值：0x01(不自检，2G，5Hz)
+#define MPU6050_ACCEL_CONFIG 0x1C // 加速计自检、测量范围及高通滤波频率，典型值：0x00(不自检，2G，5Hz)
 
 #define MPU6050_ACCEL_XOUT_H 0x3B // X轴加速度高位寄存器
 #define MPU6050_ACCEL_XOUT_L 0x3C

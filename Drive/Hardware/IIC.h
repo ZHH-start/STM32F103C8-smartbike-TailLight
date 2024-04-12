@@ -11,6 +11,6 @@ uint8_t MyI2C_ReceiveByte(void);
 void MyI2C_SendAck(uint8_t AckBit);
 uint8_t MyI2C_ReceiveAck(void);
 
-//SDA--B11,SCL--B10
+//SCL--B10,SDA--B11
 
 #endif
