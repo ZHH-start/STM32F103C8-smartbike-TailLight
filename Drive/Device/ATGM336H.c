@@ -33,8 +33,8 @@ void ATGM_StructInit()
  */
 void ParseGps()
 {
-    char *subString;
-    char *subStringNext;
+    char *subString;     // 字符串逗号指针
+    char *subStringNext; // 字符串下一个逗号指针
     char i = 0;
     if (GNRMC_Info.isGetData) {
         GNRMC_Info.isGetData = 0;
@@ -45,13 +45,13 @@ void ParseGps()
         //$GNRMC,112536.000,A,2322.75023,N,11326.28605,E,|  0.00,   0.00,  100722,,,A*78
         for (i = 0; i <= 6; i++) {
             if (i == 0) {
-                if ((subString = strstr(GNRMC_Info.GPS_Buffer, ",")) == NULL) // 如果没有找到逗号
+                if ((subString = strstr(GNRMC_Info.GPS_Buffer, ",")) == NULL) // 扫一遍字符串并拿到逗号指针
                 {
-                    return; // ERROR
+                    return; // 如果没有找到逗号则直接返回
                 }
             } else {
                 subString++;                                            // 扫GPS_Buffer下一个数据
-                if ((subStringNext = strstr(subString, ",")) != NULL) { // 扫一次
+                if ((subStringNext = strstr(subString, ",")) != NULL) { // 扫一次，拿到下一个逗号指针
                     char usefulBuffer[2];
                     switch (i) {
                         case 1:
@@ -88,7 +88,7 @@ void ParseGps()
     }
 }
 
-// 打印GPS接收到的数据
+// 转换GPS数据到国标
 void printGpsBuffer()
 {
     //$GNRMC,123211.000,A,2322.74250,N,11326.27041,E,3.21,217.19,100722,,,A*7A
@@ -98,23 +98,22 @@ void printGpsBuffer()
         if (GNRMC_Info.isUsefull) { // 如果信息有效
             float tmp            = 0;
             int j                = 0;
-            GNRMC_Info.isUsefull = 0; // 清空有效情况
-            for (i = 0; GNRMC_Info.latitude[i] != '\0'; i++) {
-
-                if (GNRMC_Info.latitude[i] == '.') {
+            GNRMC_Info.isUsefull = 0;                          // 清空有效情况
+            for (i = 0; GNRMC_Info.latitude[i] != '\0'; i++) { // 对于接收的纬度信息
+                if (GNRMC_Info.latitude[i] == '.') {           // 跳过.符号
                     continue;
                 }
                 if (i <= 1) {
                     Lat = (GNRMC_Info.latitude[0] - 48) * 10 + (GNRMC_Info.latitude[1] - 48); // 取出个位和十位拼起来
                 } else {
-                    tmp += (GNRMC_Info.latitude[i] - 48);
-                    tmp *= 10;
+                    tmp += (GNRMC_Info.latitude[i] - 48); // 取出小数点，一位一位拼起来
+                    tmp *= 10;                            // 每拿到一位就整体*10，左移一位
                 }
             }
             for (j = 0; j <= 5; j++) {
-                tmp /= 10;
+                tmp /= 10; // 把小数点后面的数字拿到后用浮点数存起来
             }
-            Lat += tmp / 60;
+            Lat += tmp / 60; // 数据转换：浮点数要除以60再合并
             // 23 22.74250
             // 23.xxxxx
             int iLat               = 0;
@@ -122,12 +121,12 @@ void printGpsBuffer()
             GNRMC_Info.latitude[0] = iLat / 10 + '0';
             GNRMC_Info.latitude[1] = iLat % 10 + '0';
             GNRMC_Info.latitude[2] = '.';
-            Lat -= iLat;
+            Lat -= iLat; // Lat整数位再次转换成字符
             for (j = 3; j < 10; j++) {
-                Lat *= 10;
-                iLat                   = (int)Lat;
-                GNRMC_Info.latitude[j] = iLat + '0';
-                Lat -= iLat;
+                Lat *= 10;                           // 左移数据（小数放到整数位置）
+                iLat                   = (int)Lat;   // 提出整数位
+                GNRMC_Info.latitude[j] = iLat + '0'; // 转成字符型放回
+                Lat -= iLat;                         // 去掉已经转化的整数
             }
             tmp = 0;
             // 113.27041-示例数据

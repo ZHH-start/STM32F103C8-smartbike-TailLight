@@ -10,15 +10,12 @@ int main(void)
     USART1_Init(115200);
     USART2_Init(9600);
     // MPU6050_Init();
-    // OLED_ShowString(1, 1, "receive:");
-    // AD_Init();
-    // USART2_Printf("test");
-    // NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级
+
     USART1_Printf("Init done.\n");
     USART2_Printf("USART2 Init done.\n");
     while (1) {
-        ParseGps();
-        printGpsBuffer();
+        ParseGps();//解析接收
+        printGpsBuffer();//处理接收
 
         // LED_open();
         // Delay_ms(500);
