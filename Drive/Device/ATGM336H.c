@@ -89,7 +89,7 @@ void ParseGps()
     }
 }
 
-// 转换GPS数据到国标
+// 转换GPS数据到标准WGS-84坐标系（dd.dddd格式）可在https://old.openluat.com/GPS-Offset.html内手动填入解析
 void printGpsBuffer()
 {
     //$GNRMC,123211.000,A,2322.74250,N,11326.27041,E,3.21,217.19,100722,,,A*7A

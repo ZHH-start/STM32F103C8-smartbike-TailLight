@@ -30,7 +30,7 @@ int main(void)
                 if (Alarm_open) {
                     OLED_ShowString(10, 1, "Alarm open!");
                     // USART2_Printf("alarm open");
-                    ParseGps();
+                    ParseGps();//解析接收
                     printGpsBuffer(); // 处理接收
                 }
                 break;
