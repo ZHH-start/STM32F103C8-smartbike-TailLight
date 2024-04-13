@@ -13,8 +13,7 @@ int main(void)
     USART2_Init(9600);
     MPU6050_Init();
     Key_init();
-    OLED_ShowString(1, 1, "STATE:OFF");
-    USART2_SendString("hello!");
+    OLED_ShowString(1, 1, "MODE:OFF");
 
     while (1) {
         switch (Mode_state) {

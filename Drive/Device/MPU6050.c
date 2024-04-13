@@ -89,7 +89,7 @@ void MPU6050_GetData()
 // 启动防盗时6050保存初始数据
 void MPU6050_Alarm_init(void)
 {
-    Delay_s(3);        // 先等待3秒
+    // Delay_ms(200);        // 先等待200ms
     MPU6050_GetData(); // 获取一次数据
     AX_later = AX;
     AY_later = AY;
@@ -111,15 +111,15 @@ void MPU6050_detect()
     // OLED_ShowString(15,1,"AY:");OLED_ShowNum(15,1,AY,6);
     // OLED_ShowString(20,1,"AZ:");OLED_ShowNum(20,1,AZ,6);
 
-    if (abs(AX - AX_later) >= 800) {
+    if (abs(AX - AX_later) >= 1000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AY - AY_later) >= 800) {
+    if (abs(AY - AY_later) >= 1000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AZ - AZ_later) >= 800) {
+    if (abs(AZ - AZ_later) >= 1000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
