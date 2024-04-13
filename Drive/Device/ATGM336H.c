@@ -85,7 +85,7 @@ void ParseGps()
             }
         }
         GNRMC_Info.isParseData = 1;
-        
+        // USART1_Printf("receive messages");
     }
 }
 
@@ -94,6 +94,7 @@ void printGpsBuffer()
 {
     //$GNRMC,123211.000,A,2322.74250,N,11326.27041,E,3.21,217.19,100722,,,A*7A
     if (GNRMC_Info.isParseData) { // 如果解析完成
+
         int i                  = 0;
         GNRMC_Info.isParseData = 0; // 清空解析完成标志位
         if (GNRMC_Info.isUsefull) { // 如果信息有效
@@ -183,7 +184,7 @@ void printGpsBuffer()
             OLED_ShowString(20, 1, "Send GPS done!");
             // printf("\r\n");
         } else {
-            printf("GPS DATA Is Not Useful!"); // 返回信息无效
+            OLED_ShowString(20, 1, "GPS not found!"); // 返回信息无效
         }
     }
 }

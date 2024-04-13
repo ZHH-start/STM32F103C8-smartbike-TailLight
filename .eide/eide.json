@@ -194,7 +194,6 @@
   "targets": {
     "Target 1": {
       "excludeList": [
-        "<virtual_root>/Drive/Device/OLED.c",
         "<virtual_root>/Drive/Device/OLED_test.c",
         "<virtual_root>/Library/stm32f10x_dma.c",
         "<virtual_root>/Library/stm32f10x_exti.c",
@@ -212,7 +211,8 @@
         "<virtual_root>/Library/stm32f10x_can.c",
         "<virtual_root>/Library/stm32f10x_adc.c",
         "<virtual_root>/Drive/Hardware/ADC.c",
-        "<virtual_root>/Library/stm32f10x_rtc.c"
+        "<virtual_root>/Library/stm32f10x_rtc.c",
+        "<virtual_root>/Drive/Device/OLED_1_3.c"
       ],
       "toolchain": "AC5",
       "compileConfig": {

@@ -21,15 +21,15 @@ int main(void)
             case 1:
                 if (Alarm_init_switch == 0) {
                     Delay_s(1);
-                    OLED_ShowString(10, 1, "Alarm...");
                     MPU6050_Alarm_init();
+                    OLED_ShowString(10, 1, "Alarm...");
                     Alarm_init_switch = 1; // 初始化已经完成
                 }
                 Delay_ms(80);
 
                 MPU6050_detect();
                 if (Alarm_open) {
-                    OLED_ShowString(15, 1, "alarm open!");
+                    OLED_ShowString(10, 1, "Alarm open!");
                     // USART2_Printf("alarm open");
                     ParseGps();
                     printGpsBuffer(); // 处理接收
