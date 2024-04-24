@@ -23,6 +23,7 @@ uint8_t MyI2C_R_SDA(void)
 
 void MyI2C_Init(void)
 {
+    //SCL--B10,SDA--B11
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	
 	GPIO_InitTypeDef GPIO_InitStructure;

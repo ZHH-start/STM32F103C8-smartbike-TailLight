@@ -47,7 +47,7 @@ uint8_t MPU6050_GetID(void)
 // 传感器上电初始化
 void MPU6050_Init(void)
 {
-    MyI2C_Init();
+    MyI2C_Init();                               // SCL--B10,SDA--B11
     MPU6050_WriteReg(MPU6050_PWR_MGMT_1, 0x00); // 电源管理，典型值：0x00(正常启用)
     // MPU6050_WriteReg(MPU6050_PWR_MGMT_2, 0x00);
     MPU6050_WriteReg(MPU6050_SMPLRT_DIV, 0x07);   // 陀螺仪采样率1k
@@ -98,7 +98,6 @@ void MPU6050_Alarm_init(void)
 
 void MPU6050_detect()
 {
-
     MPU6050_GetData();
     // USART2_Printf("AX:");USART2_SendNumber(GX,6);USART2_Printf("\n");
     // USART2_Printf("AY:");USART2_SendNumber(GY,6);USART2_Printf("\n");
@@ -107,9 +106,9 @@ void MPU6050_detect()
     // USART2_Printf("AY:");USART2_SendNumber(AY,6);USART2_Printf("\n");
     // USART2_Printf("AZ:");USART2_SendNumber(AZ,6);USART2_Printf("\n");
 
-    // OLED_ShowString(10,1,"AX:");OLED_ShowNum(10,1,AX,6);
-    // OLED_ShowString(15,1,"AY:");OLED_ShowNum(15,1,AY,6);
-    // OLED_ShowString(20,1,"AZ:");OLED_ShowNum(20,1,AZ,6);
+    // OLED_ShowNum(1, 1, AX, 6);
+    // OLED_ShowNum(10, 1, AY, 6);
+    // OLED_ShowNum(20, 1, AZ, 6);
 
     if (abs(AX - AX_later) >= 1000) {
         // USART2_Printf("warning!");
