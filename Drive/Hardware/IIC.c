@@ -81,6 +81,9 @@ void MyI2C_SendAck(uint8_t AckBit)
 	MyI2C_W_SCL(0);
 }
 
+// 等待应答信号到来
+// 返回值：1，接收应答失败
+//         0，接收应答成功
 uint8_t MyI2C_ReceiveAck(void)
 {
 	uint8_t AckBit;
