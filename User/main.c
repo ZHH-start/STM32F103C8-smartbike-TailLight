@@ -10,6 +10,7 @@ u8 Drop_open         = 0; // 是否触发摔倒保护，触发1未触发0
 
 int main(void)
 {
+    int i;
     LED_Init();
     OLED_Init();
     ATGM_StructInit();
@@ -50,6 +51,11 @@ int main(void)
                 Delay_ms(50);
 
                 // MPU6050_detect_drop();//检测姿态并比较
+                OLED_ShowSignedNum(7, 1, ++i, 2);
+
+                if (i >= 100) {
+                    i = 0;
+                }
 
                 if (Drop_open == 1) {
                     OLED_ShowString(3, 1, "Drop open!");
