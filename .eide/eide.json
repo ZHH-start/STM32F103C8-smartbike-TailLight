@@ -17,6 +17,9 @@
             "name": "Device",
             "files": [
               {
+                "path": "Drive/Device/6050_use.c"
+              },
+              {
                 "path": "Drive/Device/AIR780GE.c"
               },
               {
@@ -30,9 +33,6 @@
               },
               {
                 "path": "Drive/Device/LED.c"
-              },
-              {
-                "path": "Drive/Device/MPU6050.c"
               },
               {
                 "path": "Drive/Device/OLED_1_3.c"
@@ -54,12 +54,38 @@
               },
               {
                 "path": "Drive/Hardware/Delay.c"
-              },
-              {
-                "path": "Drive/Hardware/IIC.c"
               }
             ],
-            "folders": []
+            "folders": [
+              {
+                "name": "MPU6050",
+                "files": [
+                  {
+                    "path": "Drive/Hardware/MPU6050/IIC.c"
+                  },
+                  {
+                    "path": "Drive/Hardware/MPU6050/mpu6050.c"
+                  },
+                  {
+                    "path": "Drive/Hardware/MPU6050/mpuiic.c"
+                  }
+                ],
+                "folders": [
+                  {
+                    "name": "eMPL",
+                    "files": [
+                      {
+                        "path": "Drive/Hardware/MPU6050/eMPL/inv_mpu_dmp_motion_driver.c"
+                      },
+                      {
+                        "path": "Drive/Hardware/MPU6050/eMPL/inv_mpu.c"
+                      }
+                    ],
+                    "folders": []
+                  }
+                ]
+              }
+            ]
           },
           {
             "name": "Library",
@@ -277,7 +303,9 @@
           ".eide/deps",
           "Drive/Device",
           "Drive/Hardware",
-          "Drive/Library"
+          "Drive/Library",
+          "Drive/Hardware/MPU6050",
+          "Drive/Hardware/MPU6050/eMPL"
         ],
         "libList": [],
         "sourceDirList": [],
