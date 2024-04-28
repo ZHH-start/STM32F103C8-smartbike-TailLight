@@ -48,16 +48,15 @@ int main(void)
                     LIGHT_init_switch = 1; // 初始化已经完成
                 }
 
-                Delay_ms(50);
-
                 // MPU6050_detect_drop();//检测姿态并比较
-                OLED_ShowSignedNum(7, 1, ++i, 2);
+                // OLED_ShowSignedNum(7, 1, ++i, 2);
 
-                if (i >= 100) {
-                    i = 0;
-                }
+                // if (i >= 100) {
+                //     i = 0;
+                // }
 
                 if (Drop_open == 1) {
+                    TIM_Cmd(TIM3, DISABLE);
                     OLED_ShowString(3, 1, "Drop open!");
                     ParseGps();       // 解析接收
                     printGpsBuffer(); // 处理接收
@@ -67,7 +66,7 @@ int main(void)
             default:
                 LED_close();
                 Drop_open = 0;
-                // TIM_Cmd(TIM3, DISABLE);
+                TIM_Cmd(TIM3, DISABLE);
                 break;
         }
     }
