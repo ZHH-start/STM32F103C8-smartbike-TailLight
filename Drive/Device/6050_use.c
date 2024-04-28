@@ -52,68 +52,60 @@ void MPU6050_TIM3_Init(void)
 // 启动骑行摔倒检测时打开姿态解算
 void MPU6050_Drop_init(void)
 {
-    while (mpu_dmp_init()) { printf("6050mpu orror"); }
+    if (mpu_dmp_init())
+        OLED_ShowString(7, 1, "6050mpu orror");
+    MPU6050_TIM3_Init();
+    OLED_ShowString(7, 1, "done");
 }
 
 void MPU6050_detect_move()
 {
     MPU_Get_Accelerometer(&AX, &AY, &AZ);
-    // USART2_Printf("AX:");USART2_SendNumber(GX,6);USART2_Printf("\n");
-    // USART2_Printf("AY:");USART2_SendNumber(GY,6);USART2_Printf("\n");
-    // USART2_Printf("AZ:");USART2_SendNumber(GZ,6);USART2_Printf("\n");
-    // USART2_Printf("AX:");USART2_SendNumber(AX,6);USART2_Printf("\n");
-    // USART2_Printf("AY:");USART2_SendNumber(AY,6);USART2_Printf("\n");
-    // USART2_Printf("AZ:");USART2_SendNumber(AZ,6);USART2_Printf("\n");
 
     // OLED_ShowNum(3, 1, AX, 6);
     // OLED_ShowNum(4, 1, AY, 6);
     // OLED_ShowNum(5, 1, AZ, 6);
 
-    if (abs(AX - AX_later) >= 1000) {
+    if (abs(AX - AX_later) >= 2000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AY - AY_later) >= 1000) {
+    if (abs(AY - AY_later) >= 2000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AZ - AZ_later) >= 1000) {
+    if (abs(AZ - AZ_later) >= 5000) {
+        // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
+        // OLED_ShowString(6, 1, "ininini");
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
     AX_later = AX;
     AY_later = AY;
     AZ_later = AZ;
-
-    // OLED_ShowString(10,1,"AX:");OLED_ShowNum(10,1,abs(AX - AX_later),6);
-    // OLED_ShowString(15,1,"AY:");OLED_ShowNum(15,1,abs(AY - AY_later),6);
-    // OLED_ShowString(20,1,"AZ:");OLED_ShowNum(20,1,abs(AZ - AZ_later),6);
-
-    // OLED_ShowString(10,1,"AX:");OLED_ShowNum(10,1,GX,6);
-    // OLED_ShowString(15,1,"AY:");OLED_ShowNum(15,1,GY,6);
-    // OLED_ShowString(20,1,"AZ:");OLED_ShowNum(20,1,GZ,6);
 }
 
 void MPU6050_detect_drop()
 {
     static int pitch_last, roll_last, yaw_last; // 欧拉角
     if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) {
-        OLED_ShowString(3, 1, "pitch:");
-        OLED_ShowNum(3, 7, (int)(pitch), 3);
-        OLED_ShowString(4, 1, "roll:");
-        OLED_ShowNum(4, 6, (int)(roll), 3);
-        OLED_ShowString(5, 1, "yaw:");
-        OLED_ShowNum(5, 5, (int)(yaw), 3);
+        // OLED_ShowString(3, 1, "pitch:");
+        // OLED_ShowNum(3, 7, (int)(pitch), 3);
+        // OLED_ShowString(4, 1, "roll:");
+        // OLED_ShowNum(4, 6, (int)(roll), 3);
+        // OLED_ShowString(5, 1, "yaw:");
+        // OLED_ShowNum(5, 5, (int)(yaw), 3);
     }
 
-    if (abs(pitch_last - pitch) >= 70) {
+    if (abs(pitch_last - pitch) >= 25) {
         Drop_open = 1;
     }
-    if (abs(roll_last - roll) >= 70) {
+    if (abs(roll_last - roll) >= 30) {
         Drop_open = 1;
     }
 
-    if (abs(yaw_last - yaw) >= 70) {
+    if (abs(yaw_last - yaw) >= 30) {
+        // OLED_ShowString(6, 1, "sssss");
         Drop_open = 1;
     }
 
@@ -125,7 +117,13 @@ void MPU6050_detect_drop()
 void TIM3_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
-        MPU6050_detect_drop();
-        TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // 清除中断标志位
+
+        if (Drop_open == 0) {
+            MPU6050_detect_drop();
+            // OLED_ShowString(5, 1, "Drop_open=0");
+        } else
+            // OLED_ShowString(5, 1, "Drop_open=1");
+
+            TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // 清除中断标志位
     }
 }
