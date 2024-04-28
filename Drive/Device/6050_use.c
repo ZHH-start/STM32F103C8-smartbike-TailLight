@@ -30,15 +30,8 @@ void MPU6050_TIM3_Init(void)
     TIM_TimeBaseStructure.TIM_Prescaler     = 72 - 1;    // 分频系数，根据主频和所需频率计算
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
-
     // 初始化定时器3
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-
-    // 使能定时器3的更新中断
-    TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
-
-    // 使能定时器3
-    TIM_Cmd(TIM3, ENABLE);
 
     // 配置定时器3的中断优先级
     NVIC_InitTypeDef NVIC_InitStructure;
@@ -47,6 +40,10 @@ void MPU6050_TIM3_Init(void)
     NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
+
+    TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); // 使能定时器3的更新中断
+    TIM_Cmd(TIM3, ENABLE);                     // 使能定时器3
+    OLED_ShowString(7, 1, "done");
 }
 
 // 启动骑行摔倒检测时打开姿态解算
@@ -55,7 +52,6 @@ void MPU6050_Drop_init(void)
     if (mpu_dmp_init())
         OLED_ShowString(7, 1, "6050mpu orror");
     MPU6050_TIM3_Init();
-    OLED_ShowString(7, 1, "done");
 }
 
 void MPU6050_detect_move()
