@@ -1,6 +1,6 @@
 #include "stm32f10x_conf.h"
 
-int Mode_state = 1; // 模式切换，0是关闭，1是防盗模式，2是车灯
+int Mode_state = -1; // 模式切换，0是关闭，1是防盗模式，2是车灯
 
 u8 Alarm_init_switch = 0; // 启动防盗时的初始化。0未完成，1完成
 u8 Alarm_open        = 0; // 是否触发防盗，触发1未触发0
@@ -10,7 +10,7 @@ u8 Drop_open         = 0; // 是否触发摔倒保护，触发1未触发0
 
 int main(void)
 {
-    int i;
+    // int i;
     LED_Init();
     OLED_Init();
     ATGM_StructInit();

@@ -62,11 +62,11 @@ void MPU6050_detect_move()
     // OLED_ShowNum(4, 1, AY, 6);
     // OLED_ShowNum(5, 1, AZ, 6);
 
-    if (abs(AX - AX_later) >= 2000) {
+    if (abs(AX - AX_later) >= 4000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AY - AY_later) >= 2000) {
+    if (abs(AY - AY_later) >= 4000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
