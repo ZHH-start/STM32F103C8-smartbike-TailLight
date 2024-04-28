@@ -40,18 +40,18 @@ void Key_update_show(void)
 {
     if (Mode_state == 0) {
         OLED_Clear();
-        OLED_ShowString(1, 1, "MODE:");
-        OLED_ShowString(1, 7, "OFF");
+        OLED_ShowString(1, 1, "MODE:OFF");
+        // OLED_ShowString(1, 7, "OFF");
     }
     if (Mode_state == 1) {
         OLED_Clear();
-        OLED_ShowString(1, 1, "MODE:");
-        OLED_ShowString(1, 7, "ALARM");
+        OLED_ShowString(1, 1, "MODE:ALARM");
+        // OLED_ShowString(1, 7, "ALARM");
     }
     if (Mode_state == 2) {
         OLED_Clear();
-        OLED_ShowString(1, 1, "MODE:");
-        OLED_ShowString(1, 7, "LIGHT");
+        OLED_ShowString(1, 1, "MODE:LIGHT");
+        // OLED_ShowString(1, 7, "LIGHT");
     }
 }
 

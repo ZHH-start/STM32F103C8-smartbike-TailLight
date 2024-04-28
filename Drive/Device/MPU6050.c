@@ -106,9 +106,9 @@ void MPU6050_detect()
     // USART2_Printf("AY:");USART2_SendNumber(AY,6);USART2_Printf("\n");
     // USART2_Printf("AZ:");USART2_SendNumber(AZ,6);USART2_Printf("\n");
 
-    // OLED_ShowNum(1, 1, AX, 6);
-    // OLED_ShowNum(10, 1, AY, 6);
-    // OLED_ShowNum(20, 1, AZ, 6);
+    // OLED_ShowNum(3, 1, AX, 6);
+    // OLED_ShowNum(4, 1, AY, 6);
+    // OLED_ShowNum(5, 1, AZ, 6);
 
     if (abs(AX - AX_later) >= 1000) {
         // USART2_Printf("warning!");
