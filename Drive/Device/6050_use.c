@@ -18,6 +18,37 @@ void MPU6050_Alarm_init(void)
     AZ_later = AZ;
 }
 
+void MPU6050_TIM3_Init(void)
+{
+    // 使能定时器3的时钟
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+
+    // 设置定时器3的参数
+    TIM_TimeBaseStructure.TIM_Period        = 10000 - 1; // 定时器周期，根据主频和分频系数计算
+    TIM_TimeBaseStructure.TIM_Prescaler     = 72 - 1;    // 分频系数，根据主频和所需频率计算
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
+
+    // 初始化定时器3
+    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+
+    // 使能定时器3的更新中断
+    TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
+
+    // 使能定时器3
+    TIM_Cmd(TIM3, ENABLE);
+
+    // 配置定时器3的中断优先级
+    NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+
 // 启动骑行摔倒检测时打开姿态解算
 void MPU6050_Drop_init(void)
 {
@@ -26,7 +57,7 @@ void MPU6050_Drop_init(void)
 
 void MPU6050_detect_move()
 {
-    MPU_Get_Accelerometer(&AX_later, &AY_later, &AZ_later);
+    MPU_Get_Accelerometer(&AX, &AY, &AZ);
     // USART2_Printf("AX:");USART2_SendNumber(GX,6);USART2_Printf("\n");
     // USART2_Printf("AY:");USART2_SendNumber(GY,6);USART2_Printf("\n");
     // USART2_Printf("AZ:");USART2_SendNumber(GZ,6);USART2_Printf("\n");
@@ -75,18 +106,26 @@ void MPU6050_detect_drop()
         OLED_ShowNum(5, 5, (int)(yaw), 3);
     }
 
-    if (abs(pitch_last - pitch)) {
+    if (abs(pitch_last - pitch) >= 70) {
         Drop_open = 1;
     }
-    if (abs(roll_last - roll)) {
+    if (abs(roll_last - roll) >= 70) {
         Drop_open = 1;
     }
 
-    if (abs(yaw_last - yaw)) {
+    if (abs(yaw_last - yaw) >= 70) {
         Drop_open = 1;
     }
 
     pitch_last = (int)pitch; // 更新数据
     roll_last  = (int)roll;
     yaw_last   = (int)yaw;
+}
+
+void TIM3_IRQHandler(void)
+{
+    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
+        MPU6050_detect_drop();
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // 清除中断标志位
+    }
 }

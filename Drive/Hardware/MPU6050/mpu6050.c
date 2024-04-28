@@ -30,7 +30,7 @@ u8 MPU_Init(void)
         MPU_Set_Rate(50);                        // 设置采样率为50Hz
     } else
         return 1;
-    printf("6050initdone");
+    // printf("6050initdone");
     return 0;
 }
 // 设置MPU6050陀螺仪传感器满量程范围

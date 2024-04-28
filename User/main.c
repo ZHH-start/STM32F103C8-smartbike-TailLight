@@ -51,7 +51,7 @@ int main(void)
                 MPU6050_detect_drop();//检测姿态并比较
 
                 if (Drop_open) {
-                    OLED_ShowString(4, 1, "Drop open!");
+                    OLED_ShowString(3, 1, "Drop open!");
                     // USART2_Printf("alarm open");
                     ParseGps();       // 解析接收
                     printGpsBuffer(); // 处理接收
