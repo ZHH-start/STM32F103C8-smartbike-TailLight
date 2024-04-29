@@ -17,9 +17,9 @@ int main(void)
     USART1_Init(115200);
     USART2_Init(9600);
     MPU_Init();
+    OLED_ShowString(1, 1, "Init done.");
+    Delay_ms(1000);
     Key_init();
-    // OLED_ShowString(1, 1, "MODE:OFF");
-    Delay_ms(100);
 
     while (1) {
         switch (Mode_state) {
@@ -29,7 +29,7 @@ int main(void)
                     OLED_ShowString(2, 1, "Alarm...");
                     Alarm_init_switch = 1; // 初始化已经完成
                 }
-                Delay_ms(80);
+                // Delay_ms(80);
 
                 MPU6050_detect_move();
 
@@ -55,9 +55,11 @@ int main(void)
                 //     i = 0;
                 // }
 
+                // Delay_ms(5);
+
                 if (Drop_open == 1) {
-                    TIM_Cmd(TIM3, DISABLE);
-                    OLED_ShowString(3, 1, "Drop open!");
+                    // TIM_Cmd(TIM3, DISABLE);
+                    OLED_ShowString(3, 1, "Drop  open!");
                     ParseGps();       // 解析接收
                     printGpsBuffer(); // 处理接收
                 }
@@ -65,8 +67,13 @@ int main(void)
                 break;
             default:
                 LED_close();
-                Drop_open = 0;
-                TIM_Cmd(TIM3, DISABLE);
+                Drop_open         = 0;
+                Alarm_init_switch = 0; // 清除防盗初始化标志位
+                Alarm_open        = 0; // 清除防盗标志位
+
+                LIGHT_init_switch = 0; // 清除骑行初始化标志位
+                Drop_open         = 0; // 是否触发摔倒保护，触发1未触发0
+                // TIM_Cmd(TIM3, DISABLE);
                 break;
         }
     }

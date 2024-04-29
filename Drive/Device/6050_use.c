@@ -42,15 +42,14 @@ void MPU6050_TIM3_Init(void)
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
     // OLED_ShowString(7, 1, "done");
-    
+
     TIM_Cmd(TIM3, ENABLE); // 使能定时器3
 }
 
 // 启动骑行摔倒检测时打开姿态解算
 void MPU6050_Drop_init(void)
 {
-    if (mpu_dmp_init())
-        OLED_ShowString(7, 1, "6050mpu orror");
+    
     MPU6050_TIM3_Init();
 }
 
@@ -62,15 +61,15 @@ void MPU6050_detect_move()
     // OLED_ShowNum(4, 1, AY, 6);
     // OLED_ShowNum(5, 1, AZ, 6);
 
-    if (abs(AX - AX_later) >= 4000) {
+    if (abs(AX - AX_later) >= 8000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AY - AY_later) >= 4000) {
+    if (abs(AY - AY_later) >= 8000) {
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    if (abs(AZ - AZ_later) >= 5000) {
+    if (abs(AZ - AZ_later) >= 8000) {
         // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
         // OLED_ShowString(6, 1, "ininini");
         // USART2_Printf("warning!");
@@ -118,7 +117,8 @@ void TIM3_IRQHandler(void)
             MPU6050_detect_drop();
             // OLED_ShowString(5, 1, "Drop_open=0");
         } else
-            // OLED_ShowString(5, 1, "Drop_open=1");
+            
+        // OLED_ShowString(5, 1, "Drop_open=1");
         ;
 
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // 清除中断标志位

@@ -28,6 +28,9 @@ u8 MPU_Init(void)
         MPU_Write_Byte(MPU_PWR_MGMT1_REG, 0X01); // 设置CLKSEL,PLL X轴为参考
         MPU_Write_Byte(MPU_PWR_MGMT2_REG, 0X00); // 加速度与陀螺仪都工作
         MPU_Set_Rate(50);                        // 设置采样率为50Hz
+
+        if (mpu_dmp_init())
+            OLED_ShowString(7, 1, "6050mpu orror");
     } else
         return 1;
     // printf("6050initdone");
@@ -183,10 +186,10 @@ u8 MPU_Read_Len(u8 addr, u8 reg, u8 len, u8 *buf)
     while (len) {
         if (len == 1) {
             *buf = MyI2C_ReceiveByte(); // 读数据
-            MyI2C_SendAck(1);            // 发送nACK
+            MyI2C_SendAck(1);           // 发送nACK
         } else {
             *buf = MyI2C_ReceiveByte(); // 读数据
-            MyI2C_SendAck(0);            // 发送ACK
+            MyI2C_SendAck(0);           // 发送ACK
         }
         len--;
         buf++;
