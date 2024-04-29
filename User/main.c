@@ -10,7 +10,7 @@ u8 Drop_open         = 0; // 是否触发摔倒保护，触发1未触发0
 
 int main(void)
 {
-    // int i;
+    int i;
     LED_Init();
     OLED_Init();
     ATGM_StructInit();
@@ -31,7 +31,7 @@ int main(void)
                 }
                 // Delay_ms(80);
 
-                MPU6050_detect_move();
+                
 
                 if (Alarm_open) {
                     OLED_ShowString(3, 1, "Alarm open!");

@@ -18,63 +18,37 @@ void MPU6050_Alarm_init(void)
     AZ_later = AZ;
 }
 
-void MPU6050_TIM3_Init(void)
-{
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); // 使能定时器3的时钟
-
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-
-    // 设置定时器3的参数
-    TIM_TimeBaseStructure.TIM_Period        = 10000 - 1; // 定时器周期，根据主频和分频系数计算
-    TIM_TimeBaseStructure.TIM_Prescaler     = 72 - 1;    // 分频系数，根据主频和所需频率计算
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
-
-    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); // 初始化定时器3
-
-    TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); // 使能定时器3的更新中断
-
-    // 配置定时器3的中断优先级
-    NVIC_InitTypeDef NVIC_InitStructure;
-    NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-    // OLED_ShowString(7, 1, "done");
-
-    TIM_Cmd(TIM3, ENABLE); // 使能定时器3
-}
-
 // 启动骑行摔倒检测时打开姿态解算
 void MPU6050_Drop_init(void)
 {
-    
-    MPU6050_TIM3_Init();
 }
 
 void MPU6050_detect_move()
 {
-    MPU_Get_Accelerometer(&AX, &AY, &AZ);
+    if (MPU_Get_Accelerometer(&AX, &AY, &AZ))
+        OLED_ShowString(7, 1, "error accelero");
 
     // OLED_ShowNum(3, 1, AX, 6);
     // OLED_ShowNum(4, 1, AY, 6);
     // OLED_ShowNum(5, 1, AZ, 6);
 
-    if (abs(AX - AX_later) >= 8000) {
-        // USART2_Printf("warning!");
-        Alarm_open = 1;
-    }
-    if (abs(AY - AY_later) >= 8000) {
-        // USART2_Printf("warning!");
-        Alarm_open = 1;
-    }
-    if (abs(AZ - AZ_later) >= 8000) {
-        // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
+    if (abs(AX - AX_later) >= 10000) {
         // OLED_ShowString(6, 1, "ininini");
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
+    if (abs(AY - AY_later) >= 10000) {
+        // OLED_ShowString(6, 1, "ininini");
+        // USART2_Printf("warning!");
+        Alarm_open = 1;
+    }
+    if (abs(AZ - AZ_later) >= 10000) {
+        // OLED_ShowString(6, 1, "ininini");
+        // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
+        // USART2_Printf("warning!");
+        Alarm_open = 1;
+    }
+    
     AX_later = AX;
     AY_later = AY;
     AZ_later = AZ;
@@ -112,14 +86,21 @@ void MPU6050_detect_drop()
 void TIM3_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
+        // OLED_Clear();
 
-        if (Drop_open == 0) {
-            MPU6050_detect_drop();
-            // OLED_ShowString(5, 1, "Drop_open=0");
-        } else
-            
-        // OLED_ShowString(5, 1, "Drop_open=1");
-        ;
+        if (Alarm_init_switch) {
+            if (Alarm_open == 0)
+                MPU6050_detect_move();
+        }
+        if (LIGHT_init_switch) {
+            if (Drop_open == 0) {
+                MPU6050_detect_drop();
+                // OLED_ShowString(5, 1, "Drop_open=0");
+            } else
+
+                // OLED_ShowString(5, 1, "Drop_open=1");
+                ;
+        }
 
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // 清除中断标志位
     }

@@ -5,6 +5,34 @@
 #include "IIC.h"
 // #include "usart.h"
 
+void MPU6050_TIM3_Init(void)
+{
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); // 使能定时器3的时钟
+
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+
+    // 设置定时器3的参数
+    TIM_TimeBaseStructure.TIM_Period        = 10000 - 1; // 定时器周期，根据主频和分频系数计算
+    TIM_TimeBaseStructure.TIM_Prescaler     = 72 - 1;    // 分频系数，根据主频和所需频率计算
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
+
+    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure); // 初始化定时器3
+
+    TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); // 使能定时器3的更新中断
+
+    // 配置定时器3的中断优先级
+    NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+    // OLED_ShowString(7, 1, "done");
+
+    TIM_Cmd(TIM3, ENABLE); // 使能定时器3
+}
+
 // 初始化MPU6050
 // 返回值:0,成功
 //     其他,错误代码
@@ -16,7 +44,7 @@ u8 MPU_Init(void)
     Delay_ms(100);
     MPU_Write_Byte(MPU_PWR_MGMT1_REG, 0X00); // 唤醒MPU6050
     MPU_Set_Gyro_Fsr(3);                     // 陀螺仪传感器,±2000dps
-    MPU_Set_Accel_Fsr(0);                    // 加速度传感器,±2g
+    MPU_Set_Accel_Fsr(3);                    // 加速度传感器,±16g
     MPU_Set_Rate(50);                        // 设置采样率50Hz
     MPU_Write_Byte(MPU_INT_EN_REG, 0X00);    // 关闭所有中断
     MPU_Write_Byte(MPU_USER_CTRL_REG, 0X00); // I2C主模式关闭
@@ -29,7 +57,9 @@ u8 MPU_Init(void)
         MPU_Write_Byte(MPU_PWR_MGMT2_REG, 0X00); // 加速度与陀螺仪都工作
         MPU_Set_Rate(50);                        // 设置采样率为50Hz
 
-        if (mpu_dmp_init())
+        MPU6050_TIM3_Init(); // 读取加速度和姿态解算定时中断初始化
+
+        if (mpu_dmp_init()) // 姿态解算初始化
             OLED_ShowString(7, 1, "6050mpu orror");
     } else
         return 1;
