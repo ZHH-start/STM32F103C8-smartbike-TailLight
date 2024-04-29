@@ -34,8 +34,6 @@ void MPU6050_TIM3_Init(void)
 
     TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); // 使能定时器3的更新中断
 
-    TIM_Cmd(TIM3, ENABLE); // 使能定时器3
-
     // 配置定时器3的中断优先级
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
@@ -44,6 +42,8 @@ void MPU6050_TIM3_Init(void)
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
     // OLED_ShowString(7, 1, "done");
+    
+    TIM_Cmd(TIM3, ENABLE); // 使能定时器3
 }
 
 // 启动骑行摔倒检测时打开姿态解算
