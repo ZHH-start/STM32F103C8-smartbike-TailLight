@@ -9,4 +9,7 @@ void Key_Scan(void);
 extern u8 Alarm_init_switch; // 启动防盗时的初始化。0未完成，1完成
 extern u8 Alarm_open;        // 是否触发防盗，触发1未触发0
 
+extern u8 LIGHT_init_switch; // 启动骑行模式检测初始化。0未完成，1完成
+extern u8 Drop_open;         // 是否触发摔倒保护，触发1未触发0
+
 #endif
