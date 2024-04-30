@@ -35,6 +35,7 @@ int main(void)
 
                 if (Alarm_open) {
                     OLED_ShowString(3, 1, "Alarm open!");
+                    USART2_SendString("Alarm open!");
                     // USART2_Printf("alarm open");
                     ParseGps();       // 解析接收
                     printGpsBuffer(); // 处理接收
@@ -60,6 +61,7 @@ int main(void)
                 if (Drop_open == 1) {
                     // TIM_Cmd(TIM3, DISABLE);
                     OLED_ShowString(3, 1, "Drop  open!");
+                    USART2_SendString("Drop  open!");
                     ParseGps();       // 解析接收
                     printGpsBuffer(); // 处理接收
                 }

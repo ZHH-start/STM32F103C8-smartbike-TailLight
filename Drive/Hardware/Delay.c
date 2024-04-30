@@ -37,3 +37,7 @@ void Delay_s(uint32_t xs)
         Delay_ms(1000);
     }
 }
+
+void Delay_MS_no_while(uint32_t xms){
+
+}
