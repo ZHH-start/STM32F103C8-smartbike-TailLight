@@ -69,11 +69,11 @@ void Key_Scan(void)
     Key_read_last  = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_7);
     if (Key_read_state == 1) { // 如果按键按下
 
-        // Alarm_init_switch = 0; // 清除防盗初始化标志位
-        // Alarm_open        = 0; // 清除防盗标志位
+        Alarm_init_switch = 0; // 清除防盗初始化标志位
+        Alarm_open        = 0; // 清除防盗标志位
 
-        // LIGHT_init_switch = 0; // 清除骑行初始化标志位
-        // Drop_open         = 0; // 是否触发摔倒保护，触发1未触发0
+        LIGHT_init_switch = 0; // 清除骑行初始化标志位
+        Drop_open         = 0; // 是否触发摔倒保护，触发1未触发0
 
         if (Mode_state < 3) {
             Mode_state++; // 模式切换
@@ -87,6 +87,7 @@ void TIM1_UP_IRQHandler()
 {
     // 处理定时器1的中断事件
     Key_Scan();
+    main_delay_key_use = (++main_delay_key_use) % 10;
     // USART2_Printf("TIM1 done");
     // 清除中断标志位
     TIM1->SR &= ~TIM_SR_UIF;

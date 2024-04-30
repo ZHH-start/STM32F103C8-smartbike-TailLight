@@ -5,22 +5,36 @@
 #include "Delay.h"
 #include "math.h"
 
-int16_t AX, AY, AZ;                   // ÂèÇËÄÉÂä†ÈÄüÂ∫¶
-int16_t AX_later, AY_later, AZ_later; // ÂΩìÂâçÂä†ÈÄüÂ∫¶
-float pitch, roll, yaw;               // Ê¨ßÊãâËßí
+int16_t AX, AY, AZ;                   // ≤Œøºº”ÀŸ∂»
+int16_t AX_later, AY_later, AZ_later; // µ±«∞º”ÀŸ∂»
 
-// ÂêØÂä®Èò≤ÁõóÊó∂6050‰øùÂ≠òÂàùÂßãÊï∞ÊçÆ
+float pitch, roll, yaw;              // ≈∑¿≠Ω«
+int pitch_last, roll_last, yaw_last; // ≈∑¿≠Ω«
+
+// ∆Ù∂Ø∑¿µ¡ ±6050±£¥Ê≥ı º ˝æ›
 void MPU6050_Alarm_init(void)
 {
-    MPU_Get_Accelerometer(&AX, &AY, &AZ); // Ëé∑Âèñ‰∏ÄÊ¨°Êï∞ÊçÆ
+    MPU_Get_Accelerometer(&AX, &AY, &AZ); // ªÒ»°“ª¥Œ ˝æ›
     AX_later = AX;
     AY_later = AY;
     AZ_later = AZ;
 }
 
-// ÂêØÂä®È™ëË°åÊëîÂÄíÊ£ÄÊµãÊó∂ÊâìÂºÄÂßøÊÄÅËß£ÁÆó
+// ∆Ù∂Ø∆Ô––À§µπºÏ≤‚ ±¥Úø™◊ÀÃ¨Ω‚À„
 void MPU6050_Drop_init(void)
 {
+    if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) {
+        // OLED_ShowString(3, 1, "pitch:");
+        // OLED_ShowNum(3, 7, (int)(pitch), 3);
+        // OLED_ShowString(4, 1, "roll:");
+        // OLED_ShowNum(4, 6, (int)(roll), 3);
+        // OLED_ShowString(5, 1, "yaw:");
+        // OLED_ShowNum(5, 5, (int)(yaw), 3);
+    }
+
+    pitch_last = (int)pitch; // ∏¸–¬ ˝æ›
+    roll_last  = (int)roll;
+    yaw_last   = (int)yaw;
 }
 
 void MPU6050_detect_move()
@@ -48,7 +62,7 @@ void MPU6050_detect_move()
         // USART2_Printf("warning!");
         Alarm_open = 1;
     }
-    
+
     AX_later = AX;
     AY_later = AY;
     AZ_later = AZ;
@@ -56,7 +70,7 @@ void MPU6050_detect_move()
 
 void MPU6050_detect_drop()
 {
-    static int pitch_last, roll_last, yaw_last; // Ê¨ßÊãâËßí
+
     if (mpu_dmp_get_data(&pitch, &roll, &yaw) == 0) {
         // OLED_ShowString(3, 1, "pitch:");
         // OLED_ShowNum(3, 7, (int)(pitch), 3);
@@ -65,20 +79,25 @@ void MPU6050_detect_drop()
         // OLED_ShowString(5, 1, "yaw:");
         // OLED_ShowNum(5, 5, (int)(yaw), 3);
     }
+    if (LIGHT_init_switch) {  // π¶ƒ‹∆Ù∂Ø∫Û
+        if (Drop_open == 0) { // Œ¥¥•∑¢ ±‘À––
+            if (abs(pitch_last - pitch) >= 15) {
+                OLED_ShowString(6, 1, "sssss");
+                Drop_open = 1;
+            }
+            if (abs(roll_last - roll) >= 15) {
+                // OLED_ShowString(6, 1, "sssss");
+                Drop_open = 1;
+            }
 
-    if (abs(pitch_last - pitch) >= 15) {
-        Drop_open = 1;
-    }
-    if (abs(roll_last - roll) >= 15) {
-        Drop_open = 1;
-    }
-
-    if (abs(yaw_last - yaw) >= 15) {
-        // OLED_ShowString(6, 1, "sssss");
-        Drop_open = 1;
+            if (abs(yaw_last - yaw) >= 15) {
+                // OLED_ShowString(6, 1, "sssss");
+                Drop_open = 1;
+            }
+        }
     }
 
-    pitch_last = (int)pitch; // Êõ¥Êñ∞Êï∞ÊçÆ
+    pitch_last = (int)pitch; // ∏¸–¬ ˝æ›
     roll_last  = (int)roll;
     yaw_last   = (int)yaw;
 }
@@ -92,16 +111,17 @@ void TIM3_IRQHandler(void)
             if (Alarm_open == 0)
                 MPU6050_detect_move();
         }
-        if (LIGHT_init_switch) {
-            if (Drop_open == 0) {
-                MPU6050_detect_drop();
-                // OLED_ShowString(5, 1, "Drop_open=0");
-            } else
 
-                // OLED_ShowString(5, 1, "Drop_open=1");
-                ;
-        }
+        // if (Drop_open == 0) {   //  ÷ª“™æØ±®√ª”–±ª¥•∑¢æÕ“ª÷±‘À––
+        MPU6050_detect_drop();
+        // OLED_ShowString(5, 1, "Drop_open=0");
 
-        TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // Ê∏ÖÈô§‰∏≠Êñ≠Ê†áÂøó‰Ωç
+        // else
+
+        // OLED_ShowString(5, 1, "Drop_open=1");
+        // ;
+        // }
+
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // «Â≥˝÷–∂œ±Í÷æŒª
     }
 }
