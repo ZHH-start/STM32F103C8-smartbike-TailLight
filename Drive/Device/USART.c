@@ -44,7 +44,6 @@ u8 USART2_RX_BUF[USART2_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.
 u16 USART2_RX_STA    = 0;         // 接收状态标记
 u8 GPS_receive_count = 0;         // 串口接收数据计数
 
-
 u8 USART3_RX_BUF[USART3_REC_LEN]; // 接收缓冲,最大USART_REC_LEN个字节.
 u16 USART3_RX_STA = 0;            // 接收状态标记
 
@@ -199,7 +198,7 @@ void USART2_SendByte(uint8_t Byte)
     while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET)
         ;
 }
- 
+
 void USART3_SendByte(uint8_t Byte)
 {
     USART_SendData(USART3, Byte);
@@ -452,16 +451,16 @@ void USART2_IRQHandler(void)
         // 存储接收到的帧信息
         USART2_RX_BUF[GPS_receive_count++] = recContent;
 
-                USART2_SendByte(recContent);
+        USART2_SendByte(recContent);
         // 确定是否收到"GPRMC/GNRMC"这一帧数据
         if (USART2_RX_BUF[0] == '$' && USART2_RX_BUF[4] == 'M' && USART2_RX_BUF[5] == 'C') {
             // 接收到换行（接收完了一帧信息）
             if (recContent == '\n') {
-                memset(GNRMC_Info.GPS_Buffer, 0, GPS_Buffer_Length);           // 初始化接收帧信息数组
+                memset(GNRMC_Info.GPS_Buffer, 0, GPS_Buffer_Length);             // 初始化接收帧信息数组
                 memcpy(GNRMC_Info.GPS_Buffer, USART2_RX_BUF, GPS_receive_count); // 保存GPRMC/GNRMC这帧的数据
-                GNRMC_Info.isGetData = 1;                                          // 接收成功
-                GPS_receive_count       = 0;                                          // 清零接收帧信息接收计数变量
-                memset(USART2_RX_BUF, 0, USART2_REC_LEN);                             // 清空串口1接收Buf
+                GNRMC_Info.isGetData = 1;                                        // 接收成功
+                GPS_receive_count    = 0;                                        // 清零接收帧信息接收计数变量
+                memset(USART2_RX_BUF, 0, USART2_REC_LEN);                        // 清空串口接收Buf
             }
         }
 

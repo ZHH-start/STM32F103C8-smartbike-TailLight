@@ -12,8 +12,8 @@ u8 main_delay_key_use = 0; // 利用key扫描减缓整个main循环执行速度
 
 int main(void)
 {
-    int i;
-    long int j;
+    // int i;
+    // long int j;
     LED_Init();
     OLED_Init();
     ATGM_StructInit();
@@ -25,7 +25,7 @@ int main(void)
 
     while (1) {
         if (main_delay_key_use == 0) {
-            USART2_SendString("running");
+            USART2_SendString("running\r\n");
             main_delay_key_use++;
             switch (Mode_state) {
                 case 1: // 防盗模式
