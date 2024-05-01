@@ -18,14 +18,14 @@ int main(void)
     OLED_Init();
     ATGM_StructInit();
     USART1_Init(115200);
-    USART2_Init(9600);
+    USART2_Init(115200);
     MPU_Init();
     OLED_ShowString(1, 1, "Init done.");
     Key_init();
 
     while (1) {
         if (main_delay_key_use == 0) {
-            USART2_SendString("running\r\n");
+            // USART2_SendString("running\r\n");
             main_delay_key_use++;
             switch (Mode_state) {
                 case 1: // 防盗模式
@@ -35,7 +35,7 @@ int main(void)
                         Alarm_init_switch = 1; // 初始化已经完成
                     }
                     // Delay_ms(80);
-                    MPU6050_move_compare();
+                    // MPU6050_move_compare();
 
                     if (Alarm_open) {
                         OLED_ShowString(3, 1, "Alarm open!");
@@ -55,7 +55,7 @@ int main(void)
 
                     // MPU6050_detect_drop();//检测姿态并比较
                     // OLED_ShowSignedNum(7, 1, ++i, 2);
-                    MPU6050_drop_compare();
+                    // MPU6050_drop_compare();
                     // if (i >= 100) {
                     //     i = 0;
                     // }
