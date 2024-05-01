@@ -111,13 +111,14 @@ void Key_Scan(void)
 void TIM1_UP_IRQHandler()
 {
     // 处理定时器1的中断事件
+    // USART2_SendString("K11\r\n");
     if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
-        // USART2_SendByte('K');
+        // USART2_SendByte('S');
 
         Key_Scan();
         main_delay_key_use = (++main_delay_key_use) % 10;
         // USART2_Printf("TIM1 done");
         // 清除中断标志位
+        TIM1->SR &= ~TIM_SR_UIF;
     }
-    TIM1->SR &= ~TIM_SR_UIF;
 }
