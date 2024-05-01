@@ -157,6 +157,8 @@ void MPU6050_detect_drop()
 void TIM3_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
+
+        // USART2_SendByte('T');
         // OLED_Clear();
 
         // if (Alarm_init_switch) {

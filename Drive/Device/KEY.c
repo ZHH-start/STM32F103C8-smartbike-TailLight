@@ -13,7 +13,7 @@ void Key_TIM1_init(void)
     TIM1->ARR = 999;  // 设置自动重载值，得到10ms的定时周期
 
     TIM1->DIER |= TIM_DIER_UIE;        // 使能更新中断
-    NVIC_SetPriority(TIM1_UP_IRQn, 0); // 设置中断优先级为最高
+    NVIC_SetPriority(TIM1_UP_IRQn, 1); // 设置中断优先级为最高
     TIM1->SR = 0;                      // 清除中断标志位
     TIM1->CR1 |= TIM_CR1_CEN;          // 使能定时器1
     NVIC_EnableIRQ(TIM1_UP_IRQn);      // 使能定时器1中断
@@ -111,9 +111,13 @@ void Key_Scan(void)
 void TIM1_UP_IRQHandler()
 {
     // 处理定时器1的中断事件
-    Key_Scan();
-    main_delay_key_use = (++main_delay_key_use) % 10;
-    // USART2_Printf("TIM1 done");
-    // 清除中断标志位
+    if (TIM_GetITStatus(TIM1, TIM_IT_Update) != RESET) {
+        // USART2_SendByte('K');
+
+        Key_Scan();
+        main_delay_key_use = (++main_delay_key_use) % 10;
+        // USART2_Printf("TIM1 done");
+        // 清除中断标志位
+    }
     TIM1->SR &= ~TIM_SR_UIF;
 }
