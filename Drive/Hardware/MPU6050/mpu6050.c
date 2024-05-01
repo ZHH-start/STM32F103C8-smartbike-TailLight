@@ -12,8 +12,8 @@ void MPU6050_TIM3_Init(void)
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 
     // 设置定时器3的参数
-    TIM_TimeBaseStructure.TIM_Period        = 10000 - 1; // 定时器周期，根据主频和分频系数计算
-    TIM_TimeBaseStructure.TIM_Prescaler     = 72 - 1;    // 分频系数，根据主频和所需频率计算
+    TIM_TimeBaseStructure.TIM_Period        = 7200 - 1; // 定时器周期，根据主频和分频系数计算
+    TIM_TimeBaseStructure.TIM_Prescaler     = 1500 - 1;    // 分频系数，根据主频和所需频率计算
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
 
@@ -25,10 +25,9 @@ void MPU6050_TIM3_Init(void)
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
-    OLED_ShowString(7, 1, "done");
 
     TIM_Cmd(TIM3, ENABLE); // 使能定时器3
 }

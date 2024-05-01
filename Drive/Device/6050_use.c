@@ -86,6 +86,7 @@ void MPU6050_detect_drop()
 
     } else
         OLED_ShowString(7, 1, "get dmp data error");
+        ;
 
     if (LIGHT_init_switch) {
         if (Drop_open == 0) { // 未触发时运行
