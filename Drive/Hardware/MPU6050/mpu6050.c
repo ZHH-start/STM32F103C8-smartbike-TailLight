@@ -24,7 +24,7 @@ void MPU6050_TIM3_Init(void)
     // 配置定时器3的中断优先级
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -57,10 +57,12 @@ u8 MPU_Init(void)
         MPU_Write_Byte(MPU_PWR_MGMT2_REG, 0X00); // 加速度与陀螺仪都工作
         MPU_Set_Rate(50);                        // 设置采样率为50Hz
 
-        MPU6050_TIM3_Init(); // 读取加速度和姿态解算定时中断初始化
 
         if (mpu_dmp_init()) // 姿态解算初始化
             OLED_ShowString(7, 1, "6050mpu orror");
+
+        Delay_ms(500);
+        MPU6050_TIM3_Init(); // 读取加速度和姿态解算定时中断初始化
     } else
         return 1;
     // printf("6050initdone");

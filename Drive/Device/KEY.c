@@ -13,10 +13,35 @@ void Key_TIM1_init(void)
     TIM1->ARR = 999;  // 设置自动重载值，得到10ms的定时周期
 
     TIM1->DIER |= TIM_DIER_UIE;        // 使能更新中断
-    NVIC_SetPriority(TIM1_UP_IRQn, 0); // 设置中断优先级为最高
+    NVIC_SetPriority(TIM1_UP_IRQn, 1); // 设置中断优先级为最高
     TIM1->SR = 0;                      // 清除中断标志位
     TIM1->CR1 |= TIM_CR1_CEN;          // 使能定时器1
     NVIC_EnableIRQ(TIM1_UP_IRQn);      // 使能定时器1中断
+
+    // RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE); // 使能定时器3的时钟
+
+    // TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+
+    // // 设置定时器3的参数
+    // TIM_TimeBaseStructure.TIM_Period        = 7200 - 1; // 定时器周期，根据主频和分频系数计算
+    // TIM_TimeBaseStructure.TIM_Prescaler     = 720 - 1;  // 分频系数，根据主频和所需频率计算
+    // TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    // TIM_TimeBaseStructure.TIM_CounterMode   = TIM_CounterMode_Up;
+
+    // TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure); // 初始化定时器3
+
+    // TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE); // 使能定时器3的更新中断
+
+    // // 配置定时器3的中断优先级
+    // NVIC_InitTypeDef NVIC_InitStructure;
+    // NVIC_InitStructure.NVIC_IRQChannel                   = TIM2_IRQn;
+    // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+    // NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+    // NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+    // NVIC_Init(&NVIC_InitStructure);
+    // // OLED_ShowString(7, 1, "done");
+
+    // TIM_Cmd(TIM2, ENABLE); // 使能定时器3
 }
 
 void Key_GPIO_init()
@@ -83,7 +108,7 @@ void Key_Scan(void)
     }
 }
 
-void TIM1_UP_IRQHandler()
+void TIM2_IRQHandler()
 {
     // 处理定时器1的中断事件
     Key_Scan();

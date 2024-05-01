@@ -30,7 +30,7 @@ int main(void)
             switch (Mode_state) {
                 case 1: // 防盗模式
                     if (Alarm_init_switch == 0) {
-                        MPU6050_Alarm_init();
+                        // MPU6050_Alarm_init();
                         OLED_ShowString(2, 1, "Alarm...");
                         Alarm_init_switch = 1; // 初始化已经完成
                     }
@@ -46,7 +46,7 @@ int main(void)
                     break;
                 case 2: // 骑行模式
                     if (LIGHT_init_switch == 0) {
-                        MPU6050_Drop_init();
+                        // MPU6050_Drop_init();
                         LED_open();
                         OLED_ShowString(2, 1, "Pose solve...");
                         LIGHT_init_switch = 1; // 初始化已经完成

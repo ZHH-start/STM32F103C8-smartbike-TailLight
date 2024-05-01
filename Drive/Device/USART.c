@@ -452,6 +452,7 @@ void USART2_IRQHandler(void)
         // 存储接收到的帧信息
         USART2_RX_BUF[GPS_receive_count++] = recContent;
 
+                USART2_SendByte(recContent);
         // 确定是否收到"GPRMC/GNRMC"这一帧数据
         if (USART2_RX_BUF[0] == '$' && USART2_RX_BUF[4] == 'M' && USART2_RX_BUF[5] == 'C') {
             // 接收到换行（接收完了一帧信息）
