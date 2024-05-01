@@ -49,17 +49,17 @@ void MPU6050_detect_move()
     // OLED_ShowNum(5, 1, AZ, 6);
     if (Alarm_init_switch) {
         if (Alarm_open == 0) {
-            if (abs(AX - AX_later) >= 10000) {
+            if (abs(AX - AX_later) >= 8000) {
                 // OLED_ShowString(6, 1, "ininini");
                 // USART2_Printf("warning!");
                 Alarm_open = 1;
             }
-            if (abs(AY - AY_later) >= 10000) {
+            if (abs(AY - AY_later) >= 8000) {
                 // OLED_ShowString(6, 1, "ininini");
                 // USART2_Printf("warning!");
                 Alarm_open = 1;
             }
-            if (abs(AZ - AZ_later) >= 10000) {
+            if (abs(AZ - AZ_later) >= 8000) {
                 // OLED_ShowString(6, 1, "ininini");
                 // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
                 // USART2_Printf("warning!");
@@ -86,7 +86,7 @@ void MPU6050_detect_drop()
 
     } else
         // OLED_ShowString(7, 1, "get dmp data error");
-    Delay_ms(20);
+    Delay_ms(60);
     ;
 
     if (LIGHT_init_switch) {
