@@ -37,6 +37,27 @@ void MPU6050_Drop_init(void)
     yaw_last   = (int)yaw;
 }
 
+// 6050防盗 加速度数据比较
+void MPU6050_move_compare()
+{
+    if (abs(AX - AX_later) >= 8000) {
+        // OLED_ShowString(6, 1, "ininini");
+        // USART2_Printf("warning!");
+        Alarm_open = 1;
+    }
+    if (abs(AY - AY_later) >= 8000) {
+        // OLED_ShowString(6, 1, "ininini");
+        // USART2_Printf("warning!");
+        Alarm_open = 1;
+    }
+    if (abs(AZ - AZ_later) >= 8000) {
+        // OLED_ShowString(6, 1, "ininini");
+        // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
+        // USART2_Printf("warning!");
+        Alarm_open = 1;
+    }
+}
+
 void MPU6050_detect_move()
 {
     if (MPU_Get_Accelerometer(&AX, &AY, &AZ))
@@ -47,30 +68,50 @@ void MPU6050_detect_move()
     // OLED_ShowNum(3, 1, AX, 6);
     // OLED_ShowNum(4, 1, AY, 6);
     // OLED_ShowNum(5, 1, AZ, 6);
-    if (Alarm_init_switch) {
-        if (Alarm_open == 0) {
-            if (abs(AX - AX_later) >= 8000) {
-                // OLED_ShowString(6, 1, "ininini");
-                // USART2_Printf("warning!");
-                Alarm_open = 1;
-            }
-            if (abs(AY - AY_later) >= 8000) {
-                // OLED_ShowString(6, 1, "ininini");
-                // USART2_Printf("warning!");
-                Alarm_open = 1;
-            }
-            if (abs(AZ - AZ_later) >= 8000) {
-                // OLED_ShowString(6, 1, "ininini");
-                // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
-                // USART2_Printf("warning!");
-                Alarm_open = 1;
-            }
-        }
-    }
+
+    // if (Alarm_init_switch) {
+    //     if (Alarm_open == 0) {
+    //         if (abs(AX - AX_later) >= 8000) {
+    //             // OLED_ShowString(6, 1, "ininini");
+    //             // USART2_Printf("warning!");
+    //             Alarm_open = 1;
+    //         }
+    //         if (abs(AY - AY_later) >= 8000) {
+    //             // OLED_ShowString(6, 1, "ininini");
+    //             // USART2_Printf("warning!");
+    //             Alarm_open = 1;
+    //         }
+    //         if (abs(AZ - AZ_later) >= 8000) {
+    //             // OLED_ShowString(6, 1, "ininini");
+    //             // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
+    //             // USART2_Printf("warning!");
+    //             Alarm_open = 1;
+    //         }
+    //     }
+    // }
 
     AX_later = AX;
     AY_later = AY;
     AZ_later = AZ;
+}
+
+//6050检测骑行状态异常比较
+void MPU6050_drop_compare()
+{
+    if (abs(pitch_last - pitch) >= 10) {
+        // OLED_ShowString(6, 1, "sssss");
+        Drop_open = 1;
+    }
+
+    if (abs(roll_last - roll) >= 10) {
+        // OLED_ShowString(6, 1, "sssss");
+        Drop_open = 1;
+    }
+
+    if (abs(yaw_last - yaw) >= 10) {
+        // OLED_ShowString(6, 1, "sssss");
+        Drop_open = 1;
+    }
 }
 
 void MPU6050_detect_drop()
@@ -86,33 +127,32 @@ void MPU6050_detect_drop()
 
     } else
         // OLED_ShowString(7, 1, "get dmp data error");
-    Delay_ms(60);
+        // Delay_ms(60);
     ;
 
-    if (LIGHT_init_switch) {
-        if (Drop_open == 0) { // 未触发时运行
-            if (abs(pitch_last - pitch) >= 10) {
-                // OLED_ShowString(6, 1, "sssss");
-                Drop_open = 1;
-            }
+    // if (LIGHT_init_switch) {
+    //     if (Drop_open == 0) { // 未触发时运行
+    //         if (abs(pitch_last - pitch) >= 10) {
+    //             // OLED_ShowString(6, 1, "sssss");
+    //             Drop_open = 1;
+    //         }
 
-            if (abs(roll_last - roll) >= 10) {
-                // OLED_ShowString(6, 1, "sssss");
-                Drop_open = 1;
-            }
+    //         if (abs(roll_last - roll) >= 10) {
+    //             // OLED_ShowString(6, 1, "sssss");
+    //             Drop_open = 1;
+    //         }
 
-            if (abs(yaw_last - yaw) >= 10) {
-                // OLED_ShowString(6, 1, "sssss");
-                Drop_open = 1;
-            }
-        }
-    }
+    //         if (abs(yaw_last - yaw) >= 10) {
+    //             // OLED_ShowString(6, 1, "sssss");
+    //             Drop_open = 1;
+    //         }
+    //     }
+    // }
 
     pitch_last = (int)pitch; // 更新数据
     roll_last  = (int)roll;
     yaw_last   = (int)yaw;
 }
-
 
 void TIM3_IRQHandler(void)
 {

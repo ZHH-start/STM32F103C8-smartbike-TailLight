@@ -35,6 +35,7 @@ int main(void)
                         Alarm_init_switch = 1; // 初始化已经完成
                     }
                     // Delay_ms(80);
+                    MPU6050_move_compare();
 
                     if (Alarm_open) {
                         OLED_ShowString(3, 1, "Alarm open!");
@@ -54,7 +55,7 @@ int main(void)
 
                     // MPU6050_detect_drop();//检测姿态并比较
                     // OLED_ShowSignedNum(7, 1, ++i, 2);
-
+                    MPU6050_drop_compare();
                     // if (i >= 100) {
                     //     i = 0;
                     // }
