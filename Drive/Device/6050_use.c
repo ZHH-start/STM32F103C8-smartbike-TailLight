@@ -48,22 +48,23 @@ void MPU6050_detect_move()
     // OLED_ShowNum(4, 1, AY, 6);
     // OLED_ShowNum(5, 1, AZ, 6);
     if (Alarm_init_switch) {
-        if (Alarm_open == 0)
-            if (abs(AX - AX_later) >= 8000) {
+        if (Alarm_open == 0) {
+            if (abs(AX - AX_later) >= 10000) {
                 // OLED_ShowString(6, 1, "ininini");
                 // USART2_Printf("warning!");
                 Alarm_open = 1;
             }
-        if (abs(AY - AY_later) >= 8000) {
-            // OLED_ShowString(6, 1, "ininini");
-            // USART2_Printf("warning!");
-            Alarm_open = 1;
-        }
-        if (abs(AZ - AZ_later) >= 8000) {
-            // OLED_ShowString(6, 1, "ininini");
-            // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
-            // USART2_Printf("warning!");
-            Alarm_open = 1;
+            if (abs(AY - AY_later) >= 10000) {
+                // OLED_ShowString(6, 1, "ininini");
+                // USART2_Printf("warning!");
+                Alarm_open = 1;
+            }
+            if (abs(AZ - AZ_later) >= 10000) {
+                // OLED_ShowString(6, 1, "ininini");
+                // OLED_ShowNum(6, 1, abs(AZ - AZ_later), 6);
+                // USART2_Printf("warning!");
+                Alarm_open = 1;
+            }
         }
     }
 
@@ -110,13 +111,14 @@ void MPU6050_detect_drop()
     yaw_last   = (int)yaw;
 }
 
+
 void TIM3_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) {
         // OLED_Clear();
 
         // if (Alarm_init_switch) {
-        // if (Alarm_open == 0)
+        //     if (Alarm_open == 0)
         MPU6050_detect_move();
         // }
 
