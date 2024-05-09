@@ -12,6 +12,7 @@
 typedef struct {
     char isGetData;   // gps数据接收成功标志位，1成功0失败
     char isParseData; // 解析完成标志位，1结束0正在进行
+    char isCompute;
 
     char GPS_Buffer[GPS_Buffer_Length]; // gps接收帧信息数组
 

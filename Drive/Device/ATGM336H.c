@@ -13,6 +13,7 @@ void ATGM_StructInit()
     GNRMC_Info.isGetData   = 0;
     GNRMC_Info.isParseData = 0;
     GNRMC_Info.isUsefull   = 0;
+    GNRMC_Info.isCompute   = 0;
 
     memset(GNRMC_Info.GPS_Buffer, 0, GPS_Buffer_Length);
     memset(GNRMC_Info.UTCTime, 0, UTCTime_Length);
@@ -97,6 +98,7 @@ void printGpsBuffer()
 
         int i                  = 0;
         GNRMC_Info.isParseData = 0; // 清空解析完成标志位
+        // GNRMC_Info.isTransform = 0;
         if (GNRMC_Info.isUsefull) { // 如果信息有效
             float tmp            = 0;
             int j                = 0;
@@ -167,24 +169,29 @@ void printGpsBuffer()
                 Lon -= iLon;
             } // 处理完成经度
 
-            dest[8] = dest[10] = dest[20] = ',';
-            dest[9]                       = 'N';
-            dest[21]                      = 'E';
-            dest[22]                      = '\0';
-            for (i = 0; i < 22; i++) {
-                if (i <= 7)
-                    dest[i] = GNRMC_Info.latitude[i];
-                if (i >= 11 && i <= 19)
-                    dest[i] = GNRMC_Info.longitude[i - 11];
-            } // 将几个关键数据合到一起通过串口发送
+            GNRMC_Info.isCompute = 1;
 
-            // printf("\r\ndest = ");
-            // printf(dest);
-            USART1_SendString(dest);
-            OLED_ShowString(20, 1, "Send GPS done!");
+            // USART1_Printf(GNRMC_Info.longitude);
+
+            // dest[8] = dest[10] = dest[20] = ',';
+            // dest[9]                       = 'N';
+            // dest[21]                      = 'E';
+            // dest[22]                      = '\0';
+            // for (i = 0; i < 22; i++) {
+            //     if (i <= 7)
+            //         dest[i] = GNRMC_Info.latitude[i];
+            //     if (i >= 11 && i <= 19)
+            //         dest[i] = GNRMC_Info.longitude[i - 11];
+            // } // 将几个关键数据合到一起通过串口发送
+
+            // USART1_SendString(dest);
+            // GNRMC_Info.isTransform = 1;//如果需要标志位，应当在使用到的地方清空
+            
+            OLED_ShowString(6, 1, "Send GPS done!");
             // printf("\r\n");
         } else {
-            OLED_ShowString(20, 1, "GPS not found..."); // 返回信息无效
+            // OLED_ShowString(20, 1, "GPS not found..."); // 返回信息无效
+            OLED_ShowString(4, 1, "GPS not found...");
         }
     }
 }

@@ -12,14 +12,16 @@ u8 main_delay_key_use = 0; // 利用key扫描减缓整个main循环执行速度
 
 int main(void)
 {
-    // int i;
+    int i;
     // long int j;
-    LED_Init();
     OLED_Init();
+    OLED_ShowString(1, 1, "Init...");
+    LED_Init();
     ATGM_StructInit();
     USART1_Init(115200);
     USART2_Init(115200);
     MPU_Init();
+    OLED_Clear();
     OLED_ShowString(1, 1, "Init done.");
     Key_init();
 
@@ -39,10 +41,24 @@ int main(void)
 
                     if (Alarm_open) {
                         OLED_ShowString(3, 1, "Alarm open!");
-                        USART1_SendString("Alarm open!");
+                        USART1_SendString("GPS/alarm:Alarm open!");
                         // USART2_Printf("alarm open");
                         ParseGps();       // 解析接收
                         printGpsBuffer(); // 处理接收
+                        // Delay_ms(50);
+                        if (GNRMC_Info.isCompute == 1) {
+                            GNRMC_Info.isCompute = 0;
+                            USART1_SendString("GPS/gps_long:");
+                            USART1_SendString(GNRMC_Info.longitude); // 经度
+                            i = 22540;
+                            while (i>0)
+                            {
+                                i--;
+                            }
+                            
+                            USART1_SendString("GPS/gps_lati:");
+                            USART1_SendString(GNRMC_Info.latitude); // 经度
+                        }
                     }
                     break;
                 case 2: // 骑行模式
@@ -65,9 +81,22 @@ int main(void)
                     if (Drop_open == 1) {
                         // TIM_Cmd(TIM3, DISABLE);
                         OLED_ShowString(3, 1, "Drop  open!");
-                        USART1_SendString("Drop  open!");
+                        USART1_SendString("GPS/alarm:Drop  open!");
                         ParseGps();       // 解析接收
                         printGpsBuffer(); // 处理接收
+                        if (GNRMC_Info.isCompute == 1) {
+                            GNRMC_Info.isCompute = 0;
+                            USART1_SendString("GPS/gps_long:");
+                            USART1_SendString(GNRMC_Info.longitude); // 经度
+                            i = 22540;
+                            while (i>0)
+                            {
+                                i--;
+                            }
+                            // Delay_ms(50);
+                            USART1_SendString("GPS/gps_lati:");
+                            USART1_SendString(GNRMC_Info.latitude); // 经度
+                        }
                     }
 
                     break;
