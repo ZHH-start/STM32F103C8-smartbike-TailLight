@@ -8,6 +8,7 @@
 该项目使用Keil工具链ArmCC5编译链，EIDE工程。直接使用VScode打开smartbike-TailLight.code-workspace文件即可。
 
 ### VScode配置要求
+可参考知乎专栏[VScode搭配EIDE开发单片机](https://www.zhihu.com/column/c_1595902252421754880)
 1. 完成VScode的C和C++工具链配置。
 2. 至少有jlink，STlink或DAPlink调试器中的一种。（工程配置为DAPlink）
 3. 完成EIDE的编译工具链，下载工具链相关配置，具体参考EIDE官方文档
