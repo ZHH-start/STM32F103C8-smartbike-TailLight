@@ -14,7 +14,7 @@ int main(void)
 {
     int i;
     // long int j;
-    OLED_Init();
+    OLED_Init(); // SCL-PB8 SDA-PB9
     OLED_ShowString(1, 1, "Init...");
     LED_Init();
     ATGM_StructInit();
