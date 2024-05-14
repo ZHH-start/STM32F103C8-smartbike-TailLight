@@ -3012,7 +3012,7 @@ u8 mpu_dmp_get_data(float *pitch,float *roll,float *yaw)
 		q0 = quat[0] / q30;	//q30格式转换为浮点数
 		q1 = quat[1] / q30;
 		q2 = quat[2] / q30;
-		q3 = quat[3] / q30; 
+		q3 = quat[3] / q30;
 		//计算得到俯仰角/横滚角/航向角
 		*pitch = asin(-2 * q1 * q3 + 2 * q0* q2)* 57.3;	// pitch
 		*roll  = atan2(2 * q2 * q3 + 2 * q0 * q1, -2 * q1 * q1 - 2 * q2* q2 + 1)* 57.3;	// roll

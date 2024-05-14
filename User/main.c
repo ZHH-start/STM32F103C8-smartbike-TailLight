@@ -51,14 +51,15 @@ int main(void)
                             USART1_SendString("GPS/gps_long:");
                             USART1_SendString(GNRMC_Info.longitude); // 经度
                             i = 22540;
-                            while (i>0)
-                            {
+                            while (i > 0) {
                                 i--;
                             }
-                            
+
                             USART1_SendString("GPS/gps_lati:");
                             USART1_SendString(GNRMC_Info.latitude); // 经度
                         }
+                        //  else
+                        //     USART1_Printf("GPS/alarm:No warning");
                     }
                     break;
                 case 2: // 骑行模式
@@ -89,19 +90,21 @@ int main(void)
                             USART1_SendString("GPS/gps_long:");
                             USART1_SendString(GNRMC_Info.longitude); // 经度
                             i = 22540;
-                            while (i>0)
-                            {
+                            while (i > 0) {
                                 i--;
                             }
                             // Delay_ms(50);
                             USART1_SendString("GPS/gps_lati:");
                             USART1_SendString(GNRMC_Info.latitude); // 经度
                         }
+                        //  else
+                        //     USART1_Printf("GPS/alarm:No warning");
                     }
 
                     break;
                 default:
                     LED_close();
+                    // USART1_Printf("GPS/alarm:No warning");
                     Alarm_init_switch = 0; // 清除防盗初始化标志位
                     Alarm_open        = 0; // 清除防盗标志位
 
